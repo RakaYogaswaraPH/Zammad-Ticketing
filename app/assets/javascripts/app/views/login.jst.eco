@@ -1,5 +1,5 @@
 <div class="login fullscreen diskominfo-fullscreen-page">
-  <!-- Left Hero Image (50% Full Screen) -->
+  <!-- Left Hero Image (50% Full Screen Call Center Theme) -->
   <div class="diskominfo-hero-section">
     <div class="diskominfo-hero-overlay"></div>
     
@@ -89,12 +89,12 @@
       <!-- Footer Info -->
       <div class="js-footer diskominfo-footer-section">
         <% if user_show_password_login: %>
-          <p class="diskominfo-support-info">
+          <div class="diskominfo-support-info">
             Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.<br>
             <% if @C('user_lost_password'): %>
               <a href="#password_reset" class="diskominfo-link">Anda dapat meminta kata sandi baru di sini.</a>
             <% end %>
-          </p>
+          </div>
         <% end %>
 
         <% show_user_create_account = @C('user_create_account') && user_show_password_login %>

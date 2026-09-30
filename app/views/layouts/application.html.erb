@@ -100,7 +100,7 @@
       flex-direction: row !important;
     }
 
-    /* Left Hero Section (50% Fullscreen Banner & Quotes) */
+    /* Left Hero Section (50% Fullscreen Banner & Quotes - Call Center Theme) */
     .diskominfo-hero-section {
       flex: 0 0 50% !important;
       width: 50% !important;
@@ -109,7 +109,7 @@
       position: relative !important;
       border-radius: 0 !important;
       overflow: hidden !important;
-      background: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1400&q=80') center center / cover no-repeat !important;
+      background: url('https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=1400&q=80') center center / cover no-repeat !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
@@ -121,7 +121,7 @@
     .diskominfo-hero-overlay {
       position: absolute !important;
       inset: 0 !important;
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.15) 40%, rgba(15, 23, 42, 0.88) 100%) !important;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.2) 40%, rgba(15, 23, 42, 0.9) 100%) !important;
       z-index: 1 !important;
     }
 
@@ -203,11 +203,13 @@
       display: flex !important;
       flex-direction: column !important;
       text-align: center !important;
+      align-items: center !important;
     }
 
     .diskominfo-form-header {
       margin-bottom: 32px !important;
       text-align: center !important;
+      width: 100% !important;
     }
 
     .diskominfo-main-title {
@@ -336,25 +338,40 @@
       margin-top: 28px !important;
       text-align: center !important;
       width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
 
     .diskominfo-support-info {
       color: #64748b !important;
       font-size: 13px !important;
       line-height: 1.6 !important;
-      margin: 0 0 16px 0 !important;
+      margin: 0 auto 16px auto !important;
+      max-width: 400px !important;
       text-align: center !important;
+      display: block !important;
     }
 
-    .diskominfo-link {
+    .diskominfo-support-info p {
+      margin: 0 0 6px 0 !important;
+      text-align: center !important;
+      color: #64748b !important;
+    }
+
+    .diskominfo-link,
+    .diskominfo-support-info a {
       color: #0b5ed7 !important;
       font-weight: 600 !important;
       text-decoration: none !important;
-      display: inline-block !important;
-      margin-top: 2px !important;
+      display: block !important;
+      margin-top: 4px !important;
+      text-align: center !important;
     }
 
-    .diskominfo-link:hover {
+    .diskominfo-link:hover,
+    .diskominfo-support-info a:hover {
       color: #0a58ca !important;
       text-decoration: underline !important;
     }
@@ -366,6 +383,7 @@
       font-size: 13px !important;
       color: #475569 !important;
       text-align: center !important;
+      width: 100% !important;
     }
 
     .diskominfo-register-prompt {
@@ -473,7 +491,7 @@
         var loginRoot = document.querySelector('#app .login');
         if (!loginRoot) return;
 
-        if (loginRoot.classList.contains('diskominfo-fullscreen-enhanced')) return;
+        if (loginRoot.classList.contains('diskominfo-fullscreen-enhanced-v2')) return;
 
         var heroUnit = loginRoot.querySelector('.hero-unit') || loginRoot.querySelector('.diskominfo-login-card');
         if (!heroUnit) return;
@@ -483,7 +501,7 @@
 
         var form = heroUnit.querySelector('form#login');
 
-        // Left Hero Section (50% Fullscreen)
+        // Left Hero Section (50% Fullscreen Call Center Theme)
         var heroSection = document.createElement('div');
         heroSection.className = 'diskominfo-hero-section';
         heroSection.innerHTML = `
@@ -574,10 +592,10 @@
         footerSection.className = 'js-footer diskominfo-footer-section';
 
         var footerHtml = `
-          <p class="diskominfo-support-info">
+          <div class="diskominfo-support-info">
             Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.<br>
             <a href="#password_reset" class="diskominfo-link">Anda dapat meminta kata sandi baru di sini.</a>
-          </p>
+          </div>
           <div class="diskominfo-register-row">
             <span class="diskominfo-register-prompt">Belum memiliki akun?</span>
             <a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>
@@ -595,7 +613,7 @@
         var strayPoweredBy = document.querySelectorAll('.poweredBy, .diskominfo-powered-by');
         strayPoweredBy.forEach(function(el) { el.remove(); });
 
-        loginRoot.classList.add('diskominfo-fullscreen-enhanced');
+        loginRoot.classList.add('diskominfo-fullscreen-enhanced-v2');
       }
 
       var observer = new MutationObserver(enhanceLoginView);
