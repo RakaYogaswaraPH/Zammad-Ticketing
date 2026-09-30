@@ -496,8 +496,9 @@
 
     /* Back Button */
     .diskominfo-back-wrapper {
-      margin-bottom: 20px !important;
+      margin-top: 16px !important;
       width: 100% !important;
+      text-align: center !important;
     }
 
     .diskominfo-back-btn {
@@ -721,8 +722,6 @@
         formBodyEl.appendChild(form);
 
         mountSplitScreen(loginRoot, function(inner) {
-          inner.appendChild(buildBackButton());
-
           var hdr = document.createElement('div');
           hdr.className = 'diskominfo-form-header';
           hdr.innerHTML =
@@ -731,6 +730,7 @@
           inner.appendChild(hdr);
 
           inner.appendChild(formBodyEl);
+          inner.appendChild(buildBackButton());
         });
         return true;
       }
@@ -760,8 +760,6 @@
         formBodyEl.appendChild(form);
 
         mountSplitScreen(loginRoot, function(inner) {
-          inner.appendChild(buildBackButton());
-
           var hdr = document.createElement('div');
           hdr.className = 'diskominfo-form-header';
           hdr.innerHTML =
@@ -770,6 +768,7 @@
           inner.appendChild(hdr);
 
           inner.appendChild(formBodyEl);
+          inner.appendChild(buildBackButton());
         });
         return true;
       }
