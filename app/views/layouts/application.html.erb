@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title><%= Setting.get('product_name') %></title>
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" id="diskominfo-favicon" type="image/png" href="apple-touch-icon.png" />
+  <link rel="shortcut icon" id="diskominfo-shortcut-favicon" type="image/png" href="apple-touch-icon.png" />
+  <link rel="apple-touch-icon" id="diskominfo-apple-icon" href="apple-touch-icon.png" />
   <%= stylesheet_link_tag "application", :media => 'all' %>
   <%= stylesheet_link_tag "application-print", :media => 'print' %>
   <%= javascript_tag nonce: true do -%>
@@ -793,6 +795,22 @@
         return { root: root, hash: hash };
       }
 
+      /* ── Title & Favicon Fixer ────────────────────────────── */
+
+      function fixTitleAndFavicon() {
+        if (document.title && document.title.includes('Zammad Helpdesk')) {
+          document.title = document.title.replace('Zammad Helpdesk', 'IT Helpdesk');
+        }
+        if (logoUrlCache) {
+          ['diskominfo-favicon', 'diskominfo-shortcut-favicon', 'diskominfo-apple-icon'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el && el.getAttribute('href') !== logoUrlCache) {
+              el.setAttribute('href', logoUrlCache);
+            }
+          });
+        }
+      }
+
       function enhanceView() {
         var rh = getRootAndHash();
         if (!rh.root) return;
@@ -800,27 +818,35 @@
         var root     = rh.root;
         var hash     = rh.hash;
 
-        // Guard: if .hero-unit is NOT present, our layout is already in place — skip.
-        // If .hero-unit IS present, Zammad has rendered or re-rendered (e.g. after login error) — enhance.
-        // This correctly handles re-renders triggered by failed login, signup, etc.
         var heroUnit = root.querySelector('.hero-unit');
         if (!heroUnit) return;
 
         if      (hash === 'login' || hash === '')   enhanceLogin(root, heroUnit);
         else if (hash === 'signup')                  enhanceSignup(root, heroUnit);
         else if (hash === 'password_reset')          enhancePasswordReset(root, heroUnit);
+
+        fixTitleAndFavicon();
       }
 
       /* ── Bootstrap ───────────────────────────────────────── */
 
-      var observer = new MutationObserver(enhanceView);
+      var observer = new MutationObserver(function() {
+        enhanceView();
+        fixTitleAndFavicon();
+      });
       observer.observe(document.documentElement, { childList: true, subtree: true });
 
       window.addEventListener('hashchange', function() {
-        setTimeout(enhanceView, 100);
+        setTimeout(function() {
+          enhanceView();
+          fixTitleAndFavicon();
+        }, 100);
       });
 
-      document.addEventListener('DOMContentLoaded', enhanceView);
+      document.addEventListener('DOMContentLoaded', function() {
+        enhanceView();
+        fixTitleAndFavicon();
+      });
     })();
   <% end -%>
   <%= csrf_meta_tags %>
