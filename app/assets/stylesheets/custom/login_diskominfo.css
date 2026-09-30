@@ -1,0 +1,180 @@
+/* Custom Theme Diskominfo - IT Helpdesk Diskominfo Kabupaten Bandung */
+
+/* Base container & background */
+.login.fullscreen,
+.reset_password.fullscreen,
+.signup.fullscreen,
+.request_admin_password_auth.fullscreen {
+  background: #f4f6f9 !important;
+  color: #334155 !important;
+}
+
+.login.fullscreen .fullscreen-body > p,
+.reset_password.fullscreen .fullscreen-body > p,
+.signup.fullscreen .fullscreen-body > p {
+  color: #475569 !important;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Card / Hero Unit */
+.login .hero-unit,
+.reset_password .hero-unit,
+.signup .hero-unit,
+.request_admin_password_auth .hero-unit {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+  color: #1e293b !important;
+  padding: 32px 28px !important;
+}
+
+/* Logo & Brand Title */
+.login .company-logo {
+  max-height: 80px !important;
+  max-width: 180px !important;
+  margin: 8px auto 14px !important;
+  display: block !important;
+  object-fit: contain;
+}
+
+.login-brand-title {
+  text-align: center;
+  color: #0b5ed7; /* Diskominfo Blue */
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0 auto 24px auto;
+  letter-spacing: -0.2px;
+}
+
+/* Form Controls & Inputs */
+.login .form-group {
+  margin-bottom: 18px;
+}
+
+.login .formGroup-label label {
+  color: #334155 !important;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.login .form-control {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.login .form-control:focus {
+  background-color: #ffffff !important;
+  border-color: #0b5ed7 !important;
+  box-shadow: 0 0 0 3.5px rgba(11, 94, 215, 0.15) !important;
+  outline: none !important;
+}
+
+/* Checkbox & Text */
+.login .checkbox-replacement {
+  color: #475569 !important;
+  font-size: 14px;
+}
+
+.login .checkbox-replacement .label-text {
+  color: #475569 !important;
+}
+
+/* Primary Button */
+.login .btn--primary,
+.reset_password .btn--primary,
+.signup .btn--primary {
+  background-color: #0b5ed7 !important; /* Diskominfo Blue */
+  border: 1px solid #0b5ed7 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 12px rgba(11, 94, 215, 0.25) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.login .btn--primary:hover,
+.reset_password .btn--primary:hover,
+.signup .btn--primary:hover {
+  background-color: #0a58ca !important;
+  border-color: #0a58ca !important;
+  box-shadow: 0 6px 16px rgba(11, 94, 215, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.login .btn--primary:active,
+.reset_password .btn--primary:active,
+.signup .btn--primary:active {
+  background-color: #094bac !important;
+  transform: translateY(0);
+}
+
+/* Secondary Button / Links */
+.login .btn--text.btn--secondary {
+  color: #0b5ed7 !important;
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 10px !important;
+  text-decoration: none !important;
+}
+
+.login .btn--text.btn--secondary:hover {
+  color: #0a58ca !important;
+  text-decoration: underline !important;
+}
+
+/* Footer Section */
+.login .js-footer p,
+.reset_password .js-footer p,
+.signup .js-footer p {
+  color: #64748b !important;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.login .js-footer a,
+.reset_password .js-footer a,
+.signup .js-footer a {
+  color: #0b5ed7 !important;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.login .js-footer a:hover,
+.reset_password .js-footer a:hover,
+.signup .js-footer a:hover {
+  color: #0a58ca !important;
+  text-decoration: underline !important;
+}
+
+.login .js-footer hr {
+  border-top: 1px solid #e2e8f0 !important;
+  margin: 16px auto !important;
+}
+
+/* Powered By */
+.login .poweredBy {
+  color: #94a3b8 !important;
+  font-size: 13px;
+}
+
+.login .poweredBy a {
+  color: #64748b !important;
+}
+
+.login .poweredBy a:hover {
+  color: #0b5ed7 !important;
+}

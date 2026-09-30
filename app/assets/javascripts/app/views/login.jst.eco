@@ -14,6 +14,7 @@
 
       <div class="hero-unit">
         <img class="company-logo" src="<%= @logoUrl %>" alt="<%= @C('product_name') %>">
+        <div class="login-brand-title">IT Helpdesk Diskominfo Kabupaten Bandung</div>
 
         <% if @item.showAdminPasswordLogin || user_show_password_login: %>
           <form id="login" class="js-form">

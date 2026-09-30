@@ -45,17 +45,20 @@ const routeTarget = computed(() => (route.name ? String(route.name) : undefined)
 
 <template>
   <div
-    class="flex min-h-screen flex-col items-center bg-neutral-950 text-stone-200 dark:text-neutral-500"
+    class="flex min-h-screen flex-col items-center bg-slate-100 text-slate-700"
   >
     <div :class="boxSizeClass" class="m-auto w-full">
       <main
-        class="flex flex-col gap-2.5 rounded-3xl bg-neutral-50 p-5 text-black dark:bg-gray-500 dark:text-white"
+        class="flex flex-col gap-2.5 rounded-3xl bg-white p-6 text-slate-800 shadow-xl border border-slate-200"
         :data-zammad-target="routeTarget"
       >
         <div v-if="showLogo" class="flex justify-center">
           <CommonLogo />
         </div>
-        <h1 v-if="title" class="mb-5 text-center text-xl">
+        <div class="text-center font-bold text-blue-600 text-base -mt-1 mb-2">
+          IT Helpdesk Diskominfo Kabupaten Bandung
+        </div>
+        <h1 v-if="title" class="mb-5 text-center text-xl font-semibold text-slate-800">
           {{ $t(title) }}
         </h1>
         <slot />
