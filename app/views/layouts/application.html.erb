@@ -153,12 +153,29 @@
       filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)) !important;
     }
 
+    .diskominfo-hero-title-group {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+
     .diskominfo-hero-brand-name {
       font-size: 22px !important;
       font-weight: 700 !important;
       color: #ffffff !important;
       letter-spacing: -0.3px !important;
+      line-height: 1.15 !important;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .diskominfo-hero-brand-sub {
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      color: rgba(255, 255, 255, 0.9) !important;
+      letter-spacing: 0.2px !important;
+      line-height: 1.2 !important;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+      margin-top: 2px !important;
     }
 
     .diskominfo-hero-footer {
@@ -573,7 +590,10 @@
           '<div class="diskominfo-hero-overlay"></div>' +
           '<div class="diskominfo-hero-header">' +
             (logoUrlCache ? '<img class="diskominfo-hero-logo" src="' + logoUrlCache + '" alt="Diskominfo">' : '') +
-            '<span class="diskominfo-hero-brand-name">Diskominfo</span>' +
+            '<div class="diskominfo-hero-title-group">' +
+              '<span class="diskominfo-hero-brand-name">Diskominfo</span>' +
+              '<span class="diskominfo-hero-brand-sub">Kabupaten Bandung</span>' +
+            '</div>' +
           '</div>' +
           '<div class="diskominfo-hero-footer">' +
             '<blockquote class="diskominfo-hero-quote">' +
