@@ -1,0 +1,46 @@
+// Copyright (C) 2012-2026 Zammad Foundation, https://zammad-foundation.org/
+
+import type { EnumTaskbarEntity } from '#shared/graphql/types.ts'
+
+import type { RequiredPermission } from './permission.ts'
+import type { App } from 'vue'
+import type {
+  Router,
+  RouteRecordRaw,
+  RouteLocationRaw,
+  RouteLocationNormalizedGeneric,
+} from 'vue-router'
+
+export type InitializeAppRouter = (app: App) => Router
+
+export interface RoutesModule {
+  isMainRoute: boolean
+  default: Array<RouteRecordRaw> | RouteRecordRaw
+}
+
+export interface RouteRecordMeta {
+  title?: string
+  requiresAuth: boolean
+  requiredPermission: Maybe<RequiredPermission>
+  // Dynamic access gate evaluated on top of `requiredPermission` (e.g. feature
+  //   flags / config settings). Both must pass to enter/show the route.
+  canAccess?: () => boolean
+  redirectToDefaultRoute?: boolean
+  hasBottomNavigation?: boolean
+  customBottomNavigation?: boolean
+  hasHeader?: boolean
+  hasOwnLandmarks?: boolean
+  taskbarTabEntity?: EnumTaskbarEntity
+  taskbarTabEntityKey?: string
+  isTaskbarTabPossible?: (route: RouteLocationNormalizedGeneric) => boolean
+  level?: number
+  // Desktop only: opts the route into the main navigation sidebar. Set
+  //   `navigationGroup` in addition to nest it under a shared parent menu.
+  mainNavigation?: boolean
+  navigationGroup?: string
+  pageKey?: string
+  permanentItem?: boolean
+  skipRedirect?: (toRoute: RouteLocationNormalizedGeneric) => boolean
+}
+
+export type Link = RouteLocationRaw

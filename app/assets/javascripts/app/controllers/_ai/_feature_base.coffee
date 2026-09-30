@@ -1,0 +1,88 @@
+class App.ControllerAIFeatureBase extends App.ControllerSubContent
+  elements:
+    '.js-missingProviderAlert': 'missingProviderAlert'
+
+  events:
+    'click [data-type=legal-information]': 'legalInformation'
+
+  constructor: ->
+    if @constructor.requiredPermission
+      @permissionCheckRedirect(@constructor.requiredPermission)
+
+    super
+
+    App.Setting.fetchFull(
+      @render
+      force: false
+    )
+
+    if @permissionCheck('admin.ai_provider')
+      App.AIProviderConnection.fetchFull(
+        => @renderMissingEmbeddingProviderAlert()
+        force: false
+      )
+
+    @controllerBind('config_update', @aiProviderHasChanged)
+
+  showAlert: ->
+    !App.Config.get('ai_provider')
+
+  renderAlert: =>
+    @el.find('.js-missingProviderAlert').remove()
+
+    alertView = App.view('ai/missing_provider_alert')(
+      visible: @showAlert(),
+    )
+
+    @el.find('.page-content').prepend(alertView)
+    @refreshElements()
+
+  # Injects a provider modal into .page-header-meta for the given feature identifier;
+  # selecting the default entry deletes the feature's routing row. Shown only to provider
+  # administrators — the backing APIs require admin.ai_provider.
+  renderProviderModal: (identifier) =>
+    return unless identifier
+    return unless App.Config.get('ai_provider')
+    return unless @permissionCheck('admin.ai_provider')
+
+    @el.find('.js-featureProviderButton').remove()
+    button = $('<button />')
+      .text(App.i18n.translateInline('Provider'))
+      .addClass('btn btn--info js-featureProviderButton')
+      .off('click.ai_feature')
+      .on('click.ai_feature', (e) =>
+        e.preventDefault()
+        new App.ControllerAIFeatureProviderModal(
+          featureIdentifier: identifier
+          container: @el.closest('.content')
+        )
+      )
+    @el.find('.page-header-meta').prepend(button)
+
+  aiProviderHasChanged: (config) =>
+    return if config.name isnt 'ai_provider'
+
+    @renderAlert()
+
+  renderMissingEmbeddingProviderAlert: =>
+    @el.find('.js-missingEmbeddingProviderAlert').remove()
+    return if not App.AIProviderConnection.count() or _.some(App.AIProviderConnection.all(), (connection) -> connection.default_embedding)
+
+    @el.find('.page-content').prepend(App.view('ai/missing_embedding_provider_alert')())
+    @refreshElements()
+
+  legalInformation: (e) =>
+    e.preventDefault()
+    new App.ControllerGenericDescription(
+      description: __('''
+This feature leverages artificial intelligence (AI) to generate or support outputs, recommendations, or automated processes. AI systems are probabilistic and may produce results that are incomplete, biased, or contextually inappropriate.
+
+|Important Considerations for Admins|
+
+- User Awareness: Ensure end users understand that AI outputs require human review, especially for critical decisions (e.g., legal, financial, health, or safety-related).
+
+- Configuration Responsibility: As an admin, you are responsible for configuring this feature in a way that aligns with your organization's policies and compliance requirements.
+''')
+      container: @el.closest('.content')
+      head:      __('Legal Information')
+    )
