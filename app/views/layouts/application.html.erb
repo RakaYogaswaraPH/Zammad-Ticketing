@@ -38,193 +38,527 @@
   <% end %>
 
   <style nonce="<%= content_security_policy_nonce %>">
-    /* Diskominfo Custom Login Theme */
-    .login.fullscreen,
-    .reset_password.fullscreen,
-    .signup.fullscreen,
-    .request_admin_password_auth.fullscreen {
-      background: #f1f5f9 !important;
+    /* ==========================================================================
+       Diskominfo Kabupaten Bandung - Modern Split Screen Login Theme
+       ========================================================================== */
+
+    /* Page Background & Layout */
+    .login.fullscreen {
+      background: #f0f2f5 !important;
       color: #334155 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 100vh !important;
+      padding: 24px !important;
+      box-sizing: border-box !important;
     }
 
-    .login.fullscreen .fullscreen-body > p,
-    .reset_password.fullscreen .fullscreen-body > p,
-    .signup.fullscreen .fullscreen-body > p {
-      color: #475569 !important;
-      font-weight: 500 !important;
-      font-size: 14px !important;
+    .login .fullscreen-center {
+      width: 100% !important;
+      max-width: 1060px !important;
+      margin: 0 auto !important;
     }
 
-    .login .hero-unit,
-    .reset_password .hero-unit,
-    .signup .hero-unit,
-    .request_admin_password_auth .hero-unit {
-      background-color: #ffffff !important;
+    .login .fullscreen-body {
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    .login .fullscreen-body > p {
+      display: none !important;
+    }
+
+    /* Split Card Container */
+    .diskominfo-login-card,
+    .login .hero-unit {
+      display: flex !important;
+      flex-direction: row !important;
+      width: 100% !important;
+      max-width: 1060px !important;
+      min-height: 600px !important;
+      background: #ffffff !important;
+      border-radius: 24px !important;
+      padding: 14px !important;
+      box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05) !important;
       border: 1px solid #e2e8f0 !important;
-      border-radius: 16px !important;
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
-      color: #1e293b !important;
-      padding: 32px 28px !important;
+      margin: 0 auto !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
     }
 
-    .login .company-logo {
-      max-height: 80px !important;
-      max-width: 180px !important;
-      margin: 8px auto 14px !important;
-      display: block !important;
-      object-fit: contain;
+    /* Left Hero Section (Banner & Quotes) */
+    .diskominfo-hero-section {
+      flex: 0 0 45% !important;
+      position: relative !important;
+      border-radius: 18px !important;
+      overflow: hidden !important;
+      background: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      padding: 32px !important;
+      color: #ffffff !important;
+      box-sizing: border-box !important;
+      min-height: 570px !important;
     }
 
-    .login-brand-title {
-      text-align: center;
-      color: #0b5ed7 !important;
+    .diskominfo-hero-overlay {
+      position: absolute !important;
+      inset: 0 !important;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.2) 40%, rgba(15, 23, 42, 0.88) 100%) !important;
+      z-index: 1 !important;
+    }
+
+    .diskominfo-hero-header {
+      position: relative !important;
+      z-index: 2 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
+
+    .diskominfo-hero-logo {
+      height: 40px !important;
+      width: auto !important;
+      max-width: 140px !important;
+      object-fit: contain !important;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35)) !important;
+    }
+
+    .diskominfo-hero-brand-name {
+      font-size: 20px !important;
       font-weight: 700 !important;
-      font-size: 16px !important;
-      line-height: 1.4 !important;
-      margin: 0 auto 24px auto !important;
-      letter-spacing: -0.2px !important;
-      font-family: inherit;
+      color: #ffffff !important;
+      letter-spacing: -0.3px !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
     }
 
-    .login .form-group {
-      margin-bottom: 18px !important;
+    .diskominfo-hero-footer {
+      position: relative !important;
+      z-index: 2 !important;
     }
 
-    .login .formGroup-label label {
-      color: #334155 !important;
+    .diskominfo-hero-quote {
+      font-size: 20px !important;
       font-weight: 600 !important;
-      font-size: 13px !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.5px !important;
-      margin-bottom: 6px !important;
+      line-height: 1.4 !important;
+      color: #ffffff !important;
+      margin: 0 0 16px 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+      font-style: normal !important;
     }
 
-    .login .form-control {
+    .diskominfo-quote-author {
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      letter-spacing: 0.1px !important;
+    }
+
+    .diskominfo-quote-dept {
+      font-size: 13px !important;
+      font-weight: 400 !important;
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    /* Right Form Section */
+    .diskominfo-form-section {
+      flex: 1 1 55% !important;
+      padding: 36px 48px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      background: #ffffff !important;
+      box-sizing: border-box !important;
+    }
+
+    .diskominfo-form-header {
+      margin-bottom: 24px !important;
+      text-align: left !important;
+    }
+
+    .diskominfo-main-title {
+      font-size: 28px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 0 0 6px 0 !important;
+      letter-spacing: -0.6px !important;
+      line-height: 1.2 !important;
+    }
+
+    .diskominfo-main-subtitle {
+      font-size: 14px !important;
+      color: #64748b !important;
+      margin: 0 !important;
+      line-height: 1.5 !important;
+    }
+
+    /* Form Groups & Inputs */
+    .diskominfo-form-content .form-group {
+      margin-bottom: 18px !important;
+      text-align: left !important;
+    }
+
+    .diskominfo-form-content .formGroup-label label {
+      color: #334155 !important;
+      font-weight: 700 !important;
+      font-size: 12px !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.6px !important;
+      margin-bottom: 6px !important;
+      display: block !important;
+    }
+
+    .diskominfo-form-content .form-control {
+      width: 100% !important;
+      height: 46px !important;
       background-color: #f8fafc !important;
       border: 1.5px solid #cbd5e1 !important;
       color: #0f172a !important;
-      border-radius: 8px !important;
-      padding: 10px 14px !important;
+      border-radius: 10px !important;
+      padding: 0 16px !important;
       font-size: 14px !important;
+      box-sizing: border-box !important;
       transition: all 0.2s ease-in-out !important;
     }
 
-    .login .form-control:focus {
+    .diskominfo-form-content .form-control:focus {
       background-color: #ffffff !important;
       border-color: #0b5ed7 !important;
       box-shadow: 0 0 0 3.5px rgba(11, 94, 215, 0.15) !important;
       outline: none !important;
     }
 
-    .login .checkbox-replacement {
-      color: #475569 !important;
-      font-size: 14px !important;
+    /* Inline Actions (Remember Me & Forgot Password) */
+    .form-group--inline-actions {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin: 8px 0 20px 0 !important;
     }
 
-    .login .checkbox-replacement .label-text {
+    .form-group--inline-actions .checkbox-replacement {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
       color: #475569 !important;
+      font-size: 13px !important;
+      cursor: pointer !important;
+      margin: 0 !important;
     }
 
-    .login .btn--primary,
-    .reset_password .btn--primary,
-    .signup .btn--primary {
-      background-color: #0b5ed7 !important;
-      border: 1px solid #0b5ed7 !important;
-      color: #ffffff !important;
-      border-radius: 8px !important;
-      padding: 11px 18px !important;
+    .diskominfo-forgot-password-link {
+      font-size: 13px !important;
       font-weight: 600 !important;
-      font-size: 15px !important;
-      letter-spacing: 0.2px !important;
-      box-shadow: 0 4px 12px rgba(11, 94, 215, 0.25) !important;
-      transition: all 0.2s ease-in-out !important;
+      color: #0b5ed7 !important;
+      text-decoration: none !important;
+      transition: color 0.15s !important;
     }
 
-    .login .btn--primary:hover,
-    .reset_password .btn--primary:hover,
-    .signup .btn--primary:hover {
+    .diskominfo-forgot-password-link:hover {
+      color: #0a58ca !important;
+      text-decoration: underline !important;
+    }
+
+    /* Submit Button */
+    .btn--diskominfo-submit {
+      width: 100% !important;
+      height: 46px !important;
+      background-color: #0b5ed7 !important;
+      border: none !important;
+      border-radius: 10px !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      font-size: 15px !important;
+      letter-spacing: 0.3px !important;
+      box-shadow: 0 4px 14px rgba(11, 94, 215, 0.3) !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease-in-out !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .btn--diskominfo-submit:hover {
       background-color: #0a58ca !important;
-      border-color: #0a58ca !important;
-      box-shadow: 0 6px 16px rgba(11, 94, 215, 0.35) !important;
+      box-shadow: 0 6px 18px rgba(11, 94, 215, 0.4) !important;
       transform: translateY(-1px) !important;
     }
 
-    .login .btn--primary:active,
-    .reset_password .btn--primary:active,
-    .signup .btn--primary:active {
+    .btn--diskominfo-submit:active {
       background-color: #094bac !important;
       transform: translateY(0) !important;
     }
 
-    .login .btn--text.btn--secondary {
-      color: #0b5ed7 !important;
-      font-weight: 500 !important;
-      font-size: 14px !important;
-      margin-top: 12px !important;
-      text-decoration: none !important;
+    /* Footer Section */
+    .diskominfo-footer-section {
+      margin-top: 24px !important;
+      text-align: center !important;
     }
 
-    .login .btn--text.btn--secondary:hover {
-      color: #0a58ca !important;
-      text-decoration: underline !important;
-    }
-
-    .login .js-footer p,
-    .reset_password .js-footer p,
-    .signup .js-footer p {
+    .diskominfo-support-info {
       color: #64748b !important;
       font-size: 13px !important;
-      line-height: 1.6 !important;
+      line-height: 1.5 !important;
+      margin: 0 0 14px 0 !important;
     }
 
-    .login .js-footer a,
-    .reset_password .js-footer a,
-    .signup .js-footer a {
+    .diskominfo-link {
       color: #0b5ed7 !important;
       font-weight: 600 !important;
       text-decoration: none !important;
     }
 
-    .login .js-footer a:hover,
-    .reset_password .js-footer a:hover,
-    .signup .js-footer a:hover {
+    .diskominfo-link:hover {
       color: #0a58ca !important;
       text-decoration: underline !important;
     }
 
-    .login .js-footer hr {
-      border-top: 1px solid #e2e8f0 !important;
-      margin: 16px auto !important;
-    }
-
-    .login .poweredBy {
-      color: #94a3b8 !important;
+    .diskominfo-register-row {
+      margin-top: 14px !important;
+      padding-top: 14px !important;
+      border-top: 1px solid #f1f5f9 !important;
       font-size: 13px !important;
+      color: #475569 !important;
     }
 
-    .login .poweredBy a {
+    .diskominfo-register-prompt {
+      margin-right: 4px !important;
+    }
+
+    .diskominfo-register-link {
+      color: #0b5ed7 !important;
+      font-weight: 700 !important;
+      text-decoration: none !important;
+    }
+
+    .diskominfo-register-link:hover {
+      color: #0a58ca !important;
+      text-decoration: underline !important;
+    }
+
+    .diskominfo-mobile-switch {
+      margin-top: 10px !important;
+      font-size: 12px !important;
+    }
+
+    .diskominfo-mobile-switch a {
+      color: #94a3b8 !important;
+      text-decoration: none !important;
+    }
+
+    .diskominfo-mobile-switch a:hover {
       color: #64748b !important;
     }
 
-    .login .poweredBy a:hover {
-      color: #0b5ed7 !important;
+    .login .auth-providers,
+    .login .separator {
+      display: none !important;
+    }
+
+    .diskominfo-powered-by {
+      margin-top: 18px !important;
+      font-size: 12px !important;
+      color: #94a3b8 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+    }
+
+    .diskominfo-powered-by a {
+      color: #64748b !important;
+    }
+
+    /* Responsive Adaptations */
+    @media (max-width: 860px) {
+      .diskominfo-login-card,
+      .login .hero-unit {
+        flex-direction: column !important;
+        max-width: 480px !important;
+        min-height: auto !important;
+        padding: 10px !important;
+        border-radius: 18px !important;
+      }
+
+      .diskominfo-hero-section {
+        flex: none !important;
+        min-height: 200px !important;
+        padding: 20px !important;
+        border-radius: 14px !important;
+      }
+
+      .diskominfo-hero-quote {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .diskominfo-quote-author {
+        font-size: 13px !important;
+      }
+
+      .diskominfo-quote-dept {
+        font-size: 11px !important;
+      }
+
+      .diskominfo-form-section {
+        flex: none !important;
+        padding: 24px 16px !important;
+      }
+
+      .diskominfo-main-title {
+        font-size: 22px !important;
+      }
+
+      .diskominfo-main-subtitle {
+        font-size: 13px !important;
+      }
     }
   </style>
+
   <%= javascript_tag nonce: true do -%>
     (function() {
-      function ensureLoginSubtitle() {
-        var logo = document.querySelector('.login .company-logo');
-        if (logo && !logo.parentNode.querySelector('.login-brand-title')) {
-          var title = document.createElement('div');
-          title.className = 'login-brand-title';
-          title.textContent = 'IT Helpdesk Diskominfo Kabupaten Bandung';
-          logo.parentNode.insertBefore(title, logo.nextSibling);
+      function enhanceLoginView() {
+        var loginRoot = document.querySelector('#app .login');
+        if (!loginRoot) return;
+
+        if (loginRoot.classList.contains('diskominfo-enhanced')) return;
+
+        var heroUnit = loginRoot.querySelector('.hero-unit');
+        if (!heroUnit) return;
+
+        var logoImg = heroUnit.querySelector('.company-logo');
+        var logoUrl = logoImg ? logoImg.getAttribute('src') : '';
+
+        var form = heroUnit.querySelector('form#login');
+        var footer = loginRoot.querySelector('.js-footer');
+
+        var card = document.createElement('div');
+        card.className = 'diskominfo-login-card';
+
+        var heroSection = document.createElement('div');
+        heroSection.className = 'diskominfo-hero-section';
+        heroSection.innerHTML = `
+          <div class="diskominfo-hero-overlay"></div>
+          <div class="diskominfo-hero-header">
+            ${logoUrl ? `<img class="diskominfo-hero-logo" src="${logoUrl}" alt="Diskominfo">` : ''}
+            <span class="diskominfo-hero-brand-name">Diskominfo</span>
+          </div>
+          <div class="diskominfo-hero-footer">
+            <blockquote class="diskominfo-hero-quote">
+              “Pelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.”
+            </blockquote>
+            <div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>
+            <div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>
+          </div>
+        `;
+
+        var formSection = document.createElement('div');
+        formSection.className = 'diskominfo-form-section';
+
+        var formHeader = document.createElement('div');
+        formHeader.className = 'diskominfo-form-header';
+        formHeader.innerHTML = `
+          <h1 class="diskominfo-main-title">Selamat Datang</h1>
+          <p class="diskominfo-main-subtitle">Layanan Bantuan Teknologi Informasi Diskominfo Kabupaten Bandung</p>
+        `;
+        formSection.appendChild(formHeader);
+
+        var maintenanceAlert = loginRoot.querySelector('.js-maintenanceMode, .js-maintenanceLogin');
+        if (maintenanceAlert) {
+          formSection.appendChild(maintenanceAlert);
         }
+
+        var formBody = document.createElement('div');
+        formBody.className = 'diskominfo-form-content';
+
+        if (form) {
+          var usernameLabel = form.querySelector('label[for="username"]');
+          if (usernameLabel) usernameLabel.textContent = 'Username / Email';
+
+          var usernameInput = form.querySelector('#username');
+          if (usernameInput) usernameInput.placeholder = 'Masukkan username atau email';
+
+          var passwordLabel = form.querySelector('label[for="password"]');
+          if (passwordLabel) passwordLabel.textContent = 'Kata Sandi';
+
+          var passwordInput = form.querySelector('#password');
+          if (passwordInput) passwordInput.placeholder = '••••••••';
+
+          var rememberMeLabel = form.querySelector('.checkbox-replacement .label-text');
+          if (rememberMeLabel) rememberMeLabel.textContent = 'Ingat saya';
+
+          var forgotLink = form.querySelector('a[href="#password_reset"], .btn--secondary');
+          if (forgotLink) {
+            forgotLink.textContent = 'Lupa kata sandi?';
+            forgotLink.className = 'diskominfo-forgot-password-link';
+          }
+
+          var rememberGroup = form.querySelector('.checkbox-replacement') ? form.querySelector('.checkbox-replacement').closest('.form-group') : null;
+          if (rememberGroup) {
+            rememberGroup.classList.add('form-group--inline-actions');
+            if (forgotLink && forgotLink.parentNode !== rememberGroup) {
+              rememberGroup.appendChild(forgotLink);
+            }
+          }
+
+          var submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            submitBtn.textContent = 'Masuk';
+            submitBtn.className = 'btn btn--primary btn--diskominfo-submit';
+          }
+
+          var authProviders = heroUnit.querySelector('.auth-providers');
+          if (authProviders) authProviders.remove();
+          var separator = heroUnit.querySelector('.separator');
+          if (separator) separator.remove();
+
+          formBody.appendChild(form);
+        }
+
+        formSection.appendChild(formBody);
+
+        var footerSection = document.createElement('div');
+        footerSection.className = 'js-footer diskominfo-footer-section';
+
+        var footerHtml = `
+          <p class="diskominfo-support-info">
+            Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.<br>
+            <a href="#password_reset" class="diskominfo-link">Anda dapat meminta kata sandi baru di sini.</a>
+          </p>
+          <div class="diskominfo-register-row">
+            <span class="diskominfo-register-prompt">Belum memiliki akun?</span>
+            <a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>
+          </div>
+          <div class="poweredBy diskominfo-powered-by">
+            <span>Didukung oleh Zammad</span>
+          </div>
+        `;
+        footerSection.innerHTML = footerHtml;
+        formSection.appendChild(footerSection);
+
+        card.appendChild(heroSection);
+        card.appendChild(formSection);
+
+        var fullscreenBody = loginRoot.querySelector('.fullscreen-body') || loginRoot;
+        fullscreenBody.innerHTML = '';
+        fullscreenBody.appendChild(card);
+
+        var oldPoweredBy = loginRoot.querySelector('.poweredBy:not(.diskominfo-powered-by)');
+        if (oldPoweredBy) oldPoweredBy.remove();
+
+        loginRoot.classList.add('diskominfo-enhanced');
       }
-      var observer = new MutationObserver(ensureLoginSubtitle);
+
+      var observer = new MutationObserver(enhanceLoginView);
       observer.observe(document.documentElement, { childList: true, subtree: true });
-      window.addEventListener('hashchange', ensureLoginSubtitle);
-      document.addEventListener('DOMContentLoaded', ensureLoginSubtitle);
+      window.addEventListener('hashchange', function() {
+        setTimeout(enhanceLoginView, 50);
+      });
+      document.addEventListener('DOMContentLoaded', enhanceLoginView);
     })();
   <% end -%>
   <%= csrf_meta_tags %>

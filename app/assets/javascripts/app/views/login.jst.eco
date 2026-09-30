@@ -1,21 +1,42 @@
-<div class="login fullscreen">
-  <div class="fullscreen-center">
-    <div class="fullscreen-body">
-      <p><%- @T('Log in to %s', @C('fqdn')) %></p>
+<div class="login fullscreen diskominfo-page-wrapper">
+  <div class="diskominfo-login-card">
+    <!-- Left Hero Image Section -->
+    <div class="diskominfo-hero-section">
+      <div class="diskominfo-hero-overlay"></div>
+      
+      <!-- Top Brand -->
+      <div class="diskominfo-hero-header">
+        <img class="diskominfo-hero-logo" src="<%= @logoUrl %>" alt="Diskominfo">
+        <span class="diskominfo-hero-brand-name">Diskominfo</span>
+      </div>
+
+      <!-- Bottom Quote -->
+      <div class="diskominfo-hero-footer">
+        <blockquote class="diskominfo-hero-quote">
+          “Pelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.”
+        </blockquote>
+        <div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>
+        <div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>
+      </div>
+    </div>
+
+    <!-- Right Login Form Section -->
+    <div class="diskominfo-form-section">
+      <div class="diskominfo-form-header">
+        <h1 class="diskominfo-main-title">Selamat Datang</h1>
+        <p class="diskominfo-main-subtitle">Layanan Bantuan Teknologi Informasi Diskominfo Kabupaten Bandung</p>
+      </div>
 
       <% if @C('maintenance_mode'): %>
-        <div class="hero-unit alert alert--danger js-maintenanceMode"><%- @T('Zammad is currently in maintenance mode. Only administrators can log in. Please wait until the maintenance window is over.') %></div>
+        <div class="alert alert--danger js-maintenanceMode">Zammad sedang dalam mode pemeliharaan. Hanya administrator yang dapat masuk.</div>
       <% end %>
       <% if @C('maintenance_login') && @C('maintenance_login_message'): %>
-        <div class="hero-unit alert alert--success js-maintenanceLogin"><%- @C('maintenance_login_message') %></div>
+        <div class="alert alert--success js-maintenanceLogin"><%- @C('maintenance_login_message') %></div>
       <% end %>
 
       <% user_show_password_login = @C('user_show_password_login') || _.isEmpty(@auth_providers) %>
 
-      <div class="hero-unit">
-        <img class="company-logo" src="<%= @logoUrl %>" alt="<%= @C('product_name') %>">
-        <div class="login-brand-title">IT Helpdesk Diskominfo Kabupaten Bandung</div>
-
+      <div class="diskominfo-form-content">
         <% if @item.showAdminPasswordLogin || user_show_password_login: %>
           <form id="login" class="js-form">
             <% if @item.errorMessage: %>
@@ -26,114 +47,82 @@
 
             <div class="form-group">
               <div class="formGroup-label">
-                <label for="username"><%- @Ti('Username / email') %></label>
+                <label for="username">Username / Email</label>
               </div>
-              <input id="username" name="username" type="text" class="form-control" value="<%= @item.formPayload?.username %>" autocapitalize="off" />
+              <input id="username" name="username" type="text" class="form-control" placeholder="Masukkan username atau email" value="<%= @item.formPayload?.username %>" autocapitalize="off" />
             </div>
 
             <div class="form-group">
               <div class="formGroup-label">
-                <label for="password"><%- @Ti('Password') %></label>
+                <label for="password">Kata Sandi</label>
               </div>
-              <input id="password" name="password" type="password" class="form-control" autocomplete="off"/>
+              <input id="password" name="password" type="password" class="form-control" placeholder="••••••••" autocomplete="off"/>
             </div>
 
-            <div class="form-group">
+            <div class="form-group form-group--inline-actions">
               <label class="inline-label checkbox-replacement">
                 <input name="remember_me" value="1" type="checkbox">
                 <%- @Icon('checkbox', 'icon-unchecked') %>
                 <%- @Icon('checkbox-checked', 'icon-checked') %>
-                <span class="label-text"><%- @T('Remember me') %></span>
+                <span class="label-text">Ingat saya</span>
               </label>
+
+              <% if @C('user_lost_password'): %>
+                <a href="#password_reset" class="diskominfo-forgot-password-link">Lupa kata sandi?</a>
+              <% end %>
             </div>
 
             <div class="form-controls">
-              <button class="btn btn--primary" type="submit"><%- @T('Sign in') %></button>
-
-              <% if @C('user_lost_password'): %>
-                <a href="#password_reset" class="btn btn--text btn--secondary align-center"><%- @T('Forgot password?') %></a>
-              <% end %>
+              <button class="btn btn--primary btn--diskominfo-submit" type="submit">Masuk</button>
             </div>
 
           </form>
         <% else if @item.showAdminPasswordLoginFailed: %>
           <form id="login">
             <div class="alert alert--danger" role="alert">
-              <%- @T('The token for the admin password login is invalid.') %>
+              Token untuk login kata sandi admin tidak valid.
             </div>
           </form>
         <% end %>
-        <% if !_.isEmpty(@auth_providers): %>
-          <div class="separator">
-            <span class="separator-text">
-              <% if @C('user_show_password_login'): %>
-                <%- @T('or sign in using') %>
-              <% else: %>
-                <%- @T('Sign in using') %>
-              <% end %>
-            </span>
-          </div>
+      </div>
 
-          <div class="auth-providers">
-            <% for auth_provider in @auth_providers: %>
-              <form method="post" action="<%= auth_provider.url %>">
-                <input type="hidden" name="authenticity_token" value="<%= Spine.Ajax.defaults.headers['X-CSRF-Token'] %>">
-                <button type="submit" class="auth-provider auth-provider--<%= auth_provider.class %>">
-                  <%- @Icon("#{auth_provider.class}-button", 'provider-icon') %>
-                  <span class="provider-name">
-                    <%- @C("#{auth_provider.config}_display_name") || @T(auth_provider.name) %>
-                  </span>
-                </button>
-              </form>
+      <!-- Footer Info -->
+      <div class="js-footer diskominfo-footer-section">
+        <% if user_show_password_login: %>
+          <p class="diskominfo-support-info">
+            Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.<br>
+            <% if @C('user_lost_password'): %>
+              <a href="#password_reset" class="diskominfo-link">Anda dapat meminta kata sandi baru di sini.</a>
+            <% end %>
+          </p>
+        <% end %>
+
+        <% show_user_create_account = @C('user_create_account') && user_show_password_login %>
+        <% if show_user_create_account || !_.isEmpty(@public_links): %>
+          <div class="diskominfo-register-row">
+            <% if show_user_create_account: %>
+              <span class="diskominfo-register-prompt">Belum memiliki akun?</span>
+              <a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>
+            <% end %>
+            <% for link, link_index in @public_links: %>
+              <% if link_index > 0 || show_user_create_account: %> | <% end %>
+              <a href="<%= link.link %>" class="diskominfo-extra-link"<% if link.description: %> title="<%- @T(link.description) %>"<% end %><% if link.new_tab: %> rel="noopener noreferrer" target="_blank"<% end %>><%- @T(link.title) %></a>
             <% end %>
           </div>
         <% end %>
+
+        <% if @show_mobile_link: %>
+          <p class="diskominfo-mobile-switch">
+            <a href="#" class="js-go-to-mobile">Beralih ke tampilan mobile</a>
+          </p>
+        <% end %>
+
+        <div class="poweredBy diskominfo-powered-by">
+          <a href="https://zammad.org" target="_blank"><%- @Icon('logo') %></a>
+          <span>Didukung oleh</span>
+          <a href="https://zammad.org" target="_blank"><%- @Icon('logotype', 'logotype') %></a>
+        </div>
       </div>
-
-      <div class="js-footer">
-
-      <% if user_show_password_login: %>
-        <p>
-          <%- @T("You're already registered with your email address if you've been in touch with our Support team.") %><br>
-          <% if @C('user_lost_password'): %>
-            <a href="#password_reset"><%- @T('You can request your password here.') %></a>
-          <% end %>
-        </p>
-      <% end %>
-
-      <% if !user_show_password_login: %>
-        <p>
-          <%- @T('If you have problems with the third-party login you can request a one-time password login as an admin.') %><br>
-          <a class="text-muted" href="#admin_password_auth"><%- @T('Request the password login here.') %></a>
-        </p>
-      <% end %>
-
-      <% show_user_create_account = @C('user_create_account') && user_show_password_login %>
-      <% if show_user_create_account || !_.isEmpty(@public_links): %>
-        <hr>
-        <p>
-          <% if show_user_create_account: %>
-            <a href="#signup"><%- @T('Register as a new customer') %></a>
-          <% end %>
-          <% for link, link_index in @public_links: %>
-            <% if link_index > 0 || show_user_create_account: %> | <% end %>
-            <a href="<%= link.link %>"<% if link.description: %> title="<%- @T(link.description) %>"<% end %><% if link.new_tab: %> rel="noopener noreferrer" target="_blank"<% end %>><%- @T(link.title) %></a>
-          <% end %>
-        </p>
-      <% end %>
-      <% if @show_mobile_link: %>
-        <p>
-          <a href="#" class="align-center js-go-to-mobile"><%- @T('Continue to mobile') %></a>
-        </p>
-      <% end %>
-
-      </div>
-
     </div>
-  </div>
-  <div class="poweredBy">
-    <a href="https://zammad.org" target="_blank"><%- @Icon('logo') %></a>
-    <%- @T('Powered by') %>
-    <a href="https://zammad.org" target="_blank"><%- @Icon('logotype', 'logotype') %></a>
   </div>
 </div>

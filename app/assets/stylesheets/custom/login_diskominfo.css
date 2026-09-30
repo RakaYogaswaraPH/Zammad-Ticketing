@@ -1,180 +1,382 @@
-/* Custom Theme Diskominfo - IT Helpdesk Diskominfo Kabupaten Bandung */
+/* ==========================================================================
+   Diskominfo Kabupaten Bandung - Modern Split Screen Login Theme
+   ========================================================================== */
 
-/* Base container & background */
-.login.fullscreen,
-.reset_password.fullscreen,
-.signup.fullscreen,
-.request_admin_password_auth.fullscreen {
-  background: #f4f6f9 !important;
+/* Page Background & Reset */
+.login.fullscreen {
+  background: #f0f2f5 !important;
   color: #334155 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
 
-.login.fullscreen .fullscreen-body > p,
-.reset_password.fullscreen .fullscreen-body > p,
-.signup.fullscreen .fullscreen-body > p {
-  color: #475569 !important;
-  font-weight: 500;
-  font-size: 14px;
+.login .fullscreen-center {
+  width: 100% !important;
+  max-width: 1060px !important;
+  margin: 0 auto !important;
 }
 
-/* Card / Hero Unit */
-.login .hero-unit,
-.reset_password .hero-unit,
-.signup .hero-unit,
-.request_admin_password_auth .hero-unit {
-  background-color: #ffffff !important;
+.login .fullscreen-body {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.login .fullscreen-body > p {
+  display: none !important; /* Hide default top "Log in to ..." text */
+}
+
+/* Split Card Container */
+.diskominfo-login-card,
+.login .hero-unit {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  max-width: 1060px !important;
+  min-height: 600px !important;
+  background: #ffffff !important;
+  border-radius: 24px !important;
+  padding: 14px !important;
+  box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05) !important;
   border: 1px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
-  color: #1e293b !important;
-  padding: 32px 28px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
-/* Logo & Brand Title */
-.login .company-logo {
-  max-height: 80px !important;
-  max-width: 180px !important;
-  margin: 8px auto 14px !important;
-  display: block !important;
-  object-fit: contain;
+/* Left Hero Section (Banner & Quotes) */
+.diskominfo-hero-section {
+  flex: 0 0 45% !important;
+  position: relative !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  background: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 32px !important;
+  color: #ffffff !important;
+  box-sizing: border-box !important;
+  min-height: 570px !important;
 }
 
-.login-brand-title {
-  text-align: center;
-  color: #0b5ed7; /* Diskominfo Blue */
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 1.4;
-  margin: 0 auto 24px auto;
-  letter-spacing: -0.2px;
+.diskominfo-hero-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.2) 40%, rgba(15, 23, 42, 0.88) 100%) !important;
+  z-index: 1 !important;
 }
 
-/* Form Controls & Inputs */
-.login .form-group {
-  margin-bottom: 18px;
+.diskominfo-hero-header {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
 }
 
-.login .formGroup-label label {
+.diskominfo-hero-logo {
+  height: 40px !important;
+  width: auto !important;
+  max-width: 140px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35)) !important;
+}
+
+.diskominfo-hero-brand-name {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.3px !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.diskominfo-hero-footer {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.diskominfo-hero-quote {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: #ffffff !important;
+  margin: 0 0 16px 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+  font-style: normal !important;
+}
+
+.diskominfo-quote-author {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.1px !important;
+}
+
+.diskominfo-quote-dept {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Right Form Section */
+.diskominfo-form-section {
+  flex: 1 1 55% !important;
+  padding: 36px 48px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  background: #ffffff !important;
+  box-sizing: border-box !important;
+}
+
+.diskominfo-form-header {
+  margin-bottom: 24px !important;
+  text-align: left !important;
+}
+
+.diskominfo-main-title {
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 0 6px 0 !important;
+  letter-spacing: -0.6px !important;
+  line-height: 1.2 !important;
+}
+
+.diskominfo-main-subtitle {
+  font-size: 14px !important;
+  color: #64748b !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Form Groups & Inputs */
+.diskominfo-form-content .form-group {
+  margin-bottom: 18px !important;
+  text-align: left !important;
+}
+
+.diskominfo-form-content .formGroup-label label {
   color: #334155 !important;
-  font-weight: 600;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  margin-bottom: 6px !important;
+  display: block !important;
 }
 
-.login .form-control {
+.diskominfo-form-content .form-control {
+  width: 100% !important;
+  height: 46px !important;
   background-color: #f8fafc !important;
   border: 1.5px solid #cbd5e1 !important;
   color: #0f172a !important;
-  border-radius: 8px !important;
-  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  padding: 0 16px !important;
   font-size: 14px !important;
-  transition: all 0.2s ease-in-out;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
-.login .form-control:focus {
+.diskominfo-form-content .form-control:focus {
   background-color: #ffffff !important;
   border-color: #0b5ed7 !important;
   box-shadow: 0 0 0 3.5px rgba(11, 94, 215, 0.15) !important;
   outline: none !important;
 }
 
-/* Checkbox & Text */
-.login .checkbox-replacement {
-  color: #475569 !important;
-  font-size: 14px;
+/* Inline Actions (Remember Me & Forgot Password) */
+.form-group--inline-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 8px 0 20px 0 !important;
 }
 
-.login .checkbox-replacement .label-text {
+.form-group--inline-actions .checkbox-replacement {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
   color: #475569 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  margin: 0 !important;
 }
 
-/* Primary Button */
-.login .btn--primary,
-.reset_password .btn--primary,
-.signup .btn--primary {
-  background-color: #0b5ed7 !important; /* Diskominfo Blue */
-  border: 1px solid #0b5ed7 !important;
-  color: #ffffff !important;
-  border-radius: 8px !important;
-  padding: 10px 18px !important;
+.diskominfo-forgot-password-link {
+  font-size: 13px !important;
   font-weight: 600 !important;
-  font-size: 15px !important;
-  letter-spacing: 0.2px;
-  box-shadow: 0 4px 12px rgba(11, 94, 215, 0.25) !important;
-  transition: all 0.2s ease-in-out;
-}
-
-.login .btn--primary:hover,
-.reset_password .btn--primary:hover,
-.signup .btn--primary:hover {
-  background-color: #0a58ca !important;
-  border-color: #0a58ca !important;
-  box-shadow: 0 6px 16px rgba(11, 94, 215, 0.35) !important;
-  transform: translateY(-1px);
-}
-
-.login .btn--primary:active,
-.reset_password .btn--primary:active,
-.signup .btn--primary:active {
-  background-color: #094bac !important;
-  transform: translateY(0);
-}
-
-/* Secondary Button / Links */
-.login .btn--text.btn--secondary {
   color: #0b5ed7 !important;
-  font-weight: 500;
-  font-size: 14px;
-  margin-top: 10px !important;
   text-decoration: none !important;
+  transition: color 0.15s !important;
 }
 
-.login .btn--text.btn--secondary:hover {
+.diskominfo-forgot-password-link:hover {
   color: #0a58ca !important;
   text-decoration: underline !important;
+}
+
+/* Submit Button */
+.btn--diskominfo-submit {
+  width: 100% !important;
+  height: 46px !important;
+  background-color: #0b5ed7 !important; /* Diskominfo Blue */
+  border: none !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.3px !important;
+  box-shadow: 0 4px 14px rgba(11, 94, 215, 0.3) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.btn--diskominfo-submit:hover {
+  background-color: #0a58ca !important;
+  box-shadow: 0 6px 18px rgba(11, 94, 215, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn--diskominfo-submit:active {
+  background-color: #094bac !important;
+  transform: translateY(0) !important;
 }
 
 /* Footer Section */
-.login .js-footer p,
-.reset_password .js-footer p,
-.signup .js-footer p {
-  color: #64748b !important;
-  font-size: 13px;
-  line-height: 1.6;
+.diskominfo-footer-section {
+  margin-top: 24px !important;
+  text-align: center !important;
 }
 
-.login .js-footer a,
-.reset_password .js-footer a,
-.signup .js-footer a {
+.diskominfo-support-info {
+  color: #64748b !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  margin: 0 0 14px 0 !important;
+}
+
+.diskominfo-link {
   color: #0b5ed7 !important;
-  font-weight: 600;
+  font-weight: 600 !important;
   text-decoration: none !important;
 }
 
-.login .js-footer a:hover,
-.reset_password .js-footer a:hover,
-.signup .js-footer a:hover {
+.diskominfo-link:hover {
   color: #0a58ca !important;
   text-decoration: underline !important;
 }
 
-.login .js-footer hr {
-  border-top: 1px solid #e2e8f0 !important;
-  margin: 16px auto !important;
+.diskominfo-register-row {
+  margin-top: 14px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  font-size: 13px !important;
+  color: #475569 !important;
 }
 
-/* Powered By */
-.login .poweredBy {
+.diskominfo-register-prompt {
+  margin-right: 4px !important;
+}
+
+.diskominfo-register-link {
+  color: #0b5ed7 !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.diskominfo-register-link:hover {
+  color: #0a58ca !important;
+  text-decoration: underline !important;
+}
+
+.diskominfo-mobile-switch {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+}
+
+.diskominfo-mobile-switch a {
   color: #94a3b8 !important;
-  font-size: 13px;
+  text-decoration: none !important;
 }
 
-.login .poweredBy a {
+.diskominfo-mobile-switch a:hover {
   color: #64748b !important;
 }
 
-.login .poweredBy a:hover {
-  color: #0b5ed7 !important;
+/* Hide Default Elements that clutter */
+.login .auth-providers,
+.login .separator {
+  display: none !important; /* Non-google / clean single-login per user instruction */
+}
+
+.diskominfo-powered-by {
+  margin-top: 18px !important;
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.diskominfo-powered-by a {
+  color: #64748b !important;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 860px) {
+  .diskominfo-login-card,
+  .login .hero-unit {
+    flex-direction: column !important;
+    max-width: 480px !important;
+    min-height: auto !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+  }
+
+  .diskominfo-hero-section {
+    flex: none !important;
+    min-height: 200px !important;
+    padding: 20px !important;
+    border-radius: 14px !important;
+  }
+
+  .diskominfo-hero-quote {
+    font-size: 16px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .diskominfo-quote-author {
+    font-size: 13px !important;
+  }
+
+  .diskominfo-quote-dept {
+    font-size: 11px !important;
+  }
+
+  .diskominfo-form-section {
+    flex: none !important;
+    padding: 24px 16px !important;
+  }
+
+  .diskominfo-main-title {
+    font-size: 22px !important;
+  }
+
+  .diskominfo-main-subtitle {
+    font-size: 13px !important;
+  }
 }
