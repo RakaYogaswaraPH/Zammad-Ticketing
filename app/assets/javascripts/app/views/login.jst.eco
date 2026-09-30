@@ -1,27 +1,27 @@
-<div class="login fullscreen diskominfo-page-wrapper">
-  <div class="diskominfo-login-card">
-    <!-- Left Hero Image Section -->
-    <div class="diskominfo-hero-section">
-      <div class="diskominfo-hero-overlay"></div>
-      
-      <!-- Top Brand -->
-      <div class="diskominfo-hero-header">
-        <img class="diskominfo-hero-logo" src="<%= @logoUrl %>" alt="Diskominfo">
-        <span class="diskominfo-hero-brand-name">Diskominfo</span>
-      </div>
-
-      <!-- Bottom Quote -->
-      <div class="diskominfo-hero-footer">
-        <blockquote class="diskominfo-hero-quote">
-          “Pelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.”
-        </blockquote>
-        <div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>
-        <div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>
-      </div>
+<div class="login fullscreen diskominfo-fullscreen-page">
+  <!-- Left Hero Image (50% Full Screen) -->
+  <div class="diskominfo-hero-section">
+    <div class="diskominfo-hero-overlay"></div>
+    
+    <!-- Top Brand -->
+    <div class="diskominfo-hero-header">
+      <img class="diskominfo-hero-logo" src="<%= @logoUrl %>" alt="Diskominfo">
+      <span class="diskominfo-hero-brand-name">Diskominfo</span>
     </div>
 
-    <!-- Right Login Form Section -->
-    <div class="diskominfo-form-section">
+    <!-- Bottom Quote -->
+    <div class="diskominfo-hero-footer">
+      <blockquote class="diskominfo-hero-quote">
+        “Pelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.”
+      </blockquote>
+      <div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>
+      <div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>
+    </div>
+  </div>
+
+  <!-- Right Form Section (50% Full Screen) -->
+  <div class="diskominfo-form-section">
+    <div class="diskominfo-form-inner-wrapper">
       <div class="diskominfo-form-header">
         <h1 class="diskominfo-main-title">Selamat Datang</h1>
         <p class="diskominfo-main-subtitle">Layanan Bantuan Teknologi Informasi Diskominfo Kabupaten Bandung</p>
@@ -116,12 +116,6 @@
             <a href="#" class="js-go-to-mobile">Beralih ke tampilan mobile</a>
           </p>
         <% end %>
-
-        <div class="poweredBy diskominfo-powered-by">
-          <a href="https://zammad.org" target="_blank"><%- @Icon('logo') %></a>
-          <span>Didukung oleh</span>
-          <a href="https://zammad.org" target="_blank"><%- @Icon('logotype', 'logotype') %></a>
-        </div>
       </div>
     </div>
   </div>
