@@ -53,7 +53,9 @@
       background-color: #ffffff !important;
     }
 
-    .login.fullscreen {
+    .login.fullscreen,
+    .signup.fullscreen,
+    .reset_password.fullscreen {
       background: #ffffff !important;
       color: #334155 !important;
       display: flex !important;
@@ -68,7 +70,11 @@
     }
 
     .login .fullscreen-center,
-    .login .fullscreen-body {
+    .login .fullscreen-body,
+    .signup .fullscreen-center,
+    .signup .fullscreen-body,
+    .reset_password .fullscreen-center,
+    .reset_password .fullscreen-body {
       width: 100% !important;
       max-width: none !important;
       height: 100% !important;
@@ -82,11 +88,15 @@
       background: transparent !important;
     }
 
-    .login .fullscreen-body > p {
+    .login .fullscreen-body > p,
+    .signup .fullscreen-body > p,
+    .reset_password .fullscreen-body > p {
       display: none !important;
     }
 
-    .login .hero-unit {
+    .login .hero-unit,
+    .signup .hero-unit,
+    .reset_password .hero-unit {
       width: 100% !important;
       max-width: none !important;
       height: 100% !important;
@@ -766,39 +776,57 @@
 
       /* ── Main dispatcher ─────────────────────────────────── */
 
-      function enhanceView() {
-        var loginRoot = document.querySelector('#app .login');
-        if (!loginRoot) return;
+      // Each Zammad route renders a root element with a different class:
+      //   #login         → #app .login
+      //   #signup        → #app .signup
+      //   #password_reset→ #app .reset_password
+      function getRootAndHash() {
+        var hash = getHash();
+        var root = null;
+        if (hash === 'login' || hash === '') {
+          root = document.querySelector('#app .login');
+        } else if (hash === 'signup') {
+          root = document.querySelector('#app .signup');
+        } else if (hash === 'password_reset') {
+          root = document.querySelector('#app .reset_password');
+        }
+        // Fallback: any public fullscreen container (in case class changes)
+        if (!root) root = document.querySelector('#app .fullscreen');
+        return { root: root, hash: hash };
+      }
 
-        var heroUnit = loginRoot.querySelector('.hero-unit') || loginRoot.querySelector('.diskominfo-login-card');
+      function enhanceView() {
+        var rh = getRootAndHash();
+        if (!rh.root) return;
+
+        var root    = rh.root;
+        var hash    = rh.hash;
+        var heroUnit = root.querySelector('.hero-unit');
         if (!heroUnit) return;
 
-        var hash = getHash();
-
-        // Avoid double-enhancing the same hash state
-        if (loginRoot.dataset.diskominfoState === hash) return;
+        // Avoid double-enhancing the same element for the same hash
+        if (root.dataset.diskominfoState === hash) return;
 
         var ok = false;
-        if      (hash === 'login' || hash === '')   ok = enhanceLogin(loginRoot, heroUnit);
-        else if (hash === 'signup')                  ok = enhanceSignup(loginRoot, heroUnit);
-        else if (hash === 'password_reset')          ok = enhancePasswordReset(loginRoot, heroUnit);
+        if      (hash === 'login' || hash === '')   ok = enhanceLogin(root, heroUnit);
+        else if (hash === 'signup')                  ok = enhanceSignup(root, heroUnit);
+        else if (hash === 'password_reset')          ok = enhancePasswordReset(root, heroUnit);
 
-        if (ok) loginRoot.dataset.diskominfoState = hash;
+        if (ok) root.dataset.diskominfoState = hash;
       }
 
       /* ── Bootstrap ───────────────────────────────────────── */
 
-      var observer = new MutationObserver(function() {
-        var lr = document.querySelector('#app .login');
-        if (lr) enhanceView();
-      });
+      var observer = new MutationObserver(enhanceView);
       observer.observe(document.documentElement, { childList: true, subtree: true });
 
       window.addEventListener('hashchange', function() {
-        // Clear state so the new hash gets a fresh enhancement pass
-        var lr = document.querySelector('#app .login');
-        if (lr) delete lr.dataset.diskominfoState;
-        setTimeout(enhanceView, 80);
+        // Clear state on all possible roots so new hash gets a fresh pass
+        ['#app .login', '#app .signup', '#app .reset_password', '#app .fullscreen'].forEach(function(sel) {
+          var el = document.querySelector(sel);
+          if (el) delete el.dataset.diskominfoState;
+        });
+        setTimeout(enhanceView, 100);
       });
 
       document.addEventListener('DOMContentLoaded', enhanceView);
