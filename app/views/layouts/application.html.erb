@@ -483,145 +483,325 @@
         font-size: 13px !important;
       }
     }
+
+    /* Back Button */
+    .diskominfo-back-wrapper {
+      margin-bottom: 20px !important;
+      width: 100% !important;
+    }
+
+    .diskominfo-back-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      background: none !important;
+      border: none !important;
+      color: #64748b !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      padding: 6px 0 !important;
+      transition: color 0.15s !important;
+      box-shadow: none !important;
+    }
+
+    .diskominfo-back-btn:hover {
+      color: #0b5ed7 !important;
+      background: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Prevent Zammad dark flash on signup/password_reset routes */
+    body {
+      background: #ffffff !important;
+    }
+
+    .login .hero-unit {
+      background: #ffffff !important;
+      color: #334155 !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Signup form - handle side-by-side name fields */
+    .diskominfo-form-content .row {
+      display: flex !important;
+      gap: 12px !important;
+      margin-bottom: 0 !important;
+    }
+
+    .diskominfo-form-content .row > [class*="col-"] {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+
+    @media (max-width: 600px) {
+      .diskominfo-form-content .row {
+        flex-direction: column !important;
+        gap: 0 !important;
+      }
+    }
   </style>
 
   <%= javascript_tag nonce: true do -%>
     (function() {
-      function enhanceLoginView() {
+      var logoUrlCache = '';
+
+      /* ── Helpers ─────────────────────────────────────────── */
+
+      function getHash() {
+        return (window.location.hash || '#login').replace(/^#\/?/, '') || 'login';
+      }
+
+      function buildHeroSection() {
+        var el = document.createElement('div');
+        el.className = 'diskominfo-hero-section';
+        el.innerHTML =
+          '<div class="diskominfo-hero-overlay"></div>' +
+          '<div class="diskominfo-hero-header">' +
+            (logoUrlCache ? '<img class="diskominfo-hero-logo" src="' + logoUrlCache + '" alt="Diskominfo">' : '') +
+            '<span class="diskominfo-hero-brand-name">Diskominfo</span>' +
+          '</div>' +
+          '<div class="diskominfo-hero-footer">' +
+            '<blockquote class="diskominfo-hero-quote">' +
+              '\u201cPelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.\u201d' +
+            '</blockquote>' +
+            '<div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>' +
+            '<div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>' +
+          '</div>';
+        return el;
+      }
+
+      function buildFormSection() {
+        var el = document.createElement('div');
+        el.className = 'diskominfo-form-section';
+        return el;
+      }
+
+      function buildInnerWrapper() {
+        var el = document.createElement('div');
+        el.className = 'diskominfo-form-inner-wrapper';
+        return el;
+      }
+
+      function buildBackButton() {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'diskominfo-back-btn';
+        btn.innerHTML =
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
+          ' Kembali ke Login';
+        btn.onclick = function() { window.location.hash = 'login'; };
+        var wrap = document.createElement('div');
+        wrap.className = 'diskominfo-back-wrapper';
+        wrap.appendChild(btn);
+        return wrap;
+      }
+
+      function mountSplitScreen(loginRoot, innerPopulateFn) {
+        var heroSection  = buildHeroSection();
+        var formSection  = buildFormSection();
+        var formInner    = buildInnerWrapper();
+        innerPopulateFn(formInner);
+        formSection.appendChild(formInner);
+        loginRoot.innerHTML = '';
+        loginRoot.appendChild(heroSection);
+        loginRoot.appendChild(formSection);
+        document.querySelectorAll('.poweredBy, .diskominfo-powered-by').forEach(function(e) { e.remove(); });
+      }
+
+      /* ── Login view ──────────────────────────────────────── */
+
+      function enhanceLogin(loginRoot, heroUnit) {
+        var logoImg = heroUnit.querySelector('.company-logo') || heroUnit.querySelector('.diskominfo-hero-logo');
+        if (logoImg && logoImg.getAttribute('src')) logoUrlCache = logoImg.getAttribute('src');
+
+        var form = heroUnit.querySelector('form#login');
+        if (!form) return false;
+
+        var el;
+        el = form.querySelector('label[for="username"]');                                    if (el) el.textContent = 'Username / Email';
+        el = form.querySelector('#username');                                                 if (el) el.placeholder = 'Masukkan username atau email';
+        el = form.querySelector('label[for="password"]');                                    if (el) el.textContent = 'Kata Sandi';
+        el = form.querySelector('#password');                                                 if (el) el.placeholder = '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
+        el = form.querySelector('.checkbox-replacement .label-text');                         if (el) el.textContent = 'Ingat saya';
+
+        var forgotLink = form.querySelector('a[href="#password_reset"]') || form.querySelector('.btn--secondary');
+        if (forgotLink) { forgotLink.textContent = 'Lupa kata sandi?'; forgotLink.className = 'diskominfo-forgot-password-link'; }
+
+        var rememberGroup = form.querySelector('.checkbox-replacement') ? form.querySelector('.checkbox-replacement').closest('.form-group') : null;
+        if (rememberGroup) {
+          rememberGroup.classList.add('form-group--inline-actions');
+          if (forgotLink && forgotLink.parentNode !== rememberGroup) rememberGroup.appendChild(forgotLink);
+        }
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) { submitBtn.textContent = 'Masuk'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
+
+        heroUnit.querySelectorAll('.auth-providers, .separator').forEach(function(e) { e.remove(); });
+
+        var formBodyEl = document.createElement('div');
+        formBodyEl.className = 'diskominfo-form-content';
+        formBodyEl.appendChild(form);
+
+        mountSplitScreen(loginRoot, function(inner) {
+          var hdr = document.createElement('div');
+          hdr.className = 'diskominfo-form-header';
+          hdr.innerHTML =
+            '<h1 class="diskominfo-main-title">Selamat Datang</h1>' +
+            '<p class="diskominfo-main-subtitle">Layanan Bantuan Teknologi Informasi Diskominfo Kabupaten Bandung</p>';
+          inner.appendChild(hdr);
+
+          inner.appendChild(formBodyEl);
+
+          var footer = document.createElement('div');
+          footer.className = 'js-footer diskominfo-footer-section';
+          footer.innerHTML =
+            '<div class="diskominfo-support-info" style="text-align:center;margin:0 auto 16px auto;max-width:400px;display:block;color:#64748b;font-size:13px;line-height:1.6;">' +
+              '<span style="display:block;text-align:center;">Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.</span>' +
+              '<a href="#password_reset" class="diskominfo-link" style="display:block;text-align:center;margin-top:4px;color:#0b5ed7;font-weight:600;text-decoration:none;">Anda dapat meminta kata sandi baru di sini.</a>' +
+            '</div>' +
+            '<div class="diskominfo-register-row">' +
+              '<span class="diskominfo-register-prompt">Belum memiliki akun?</span>' +
+              '<a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>' +
+            '</div>';
+          inner.appendChild(footer);
+        });
+        return true;
+      }
+
+      /* ── Signup view ─────────────────────────────────────── */
+
+      function enhanceSignup(loginRoot, heroUnit) {
+        var logoImg = heroUnit.querySelector('.company-logo') || heroUnit.querySelector('.diskominfo-hero-logo');
+        if (logoImg && logoImg.getAttribute('src')) logoUrlCache = logoImg.getAttribute('src');
+
+        var form = heroUnit.querySelector('form#signup') || heroUnit.querySelector('form');
+        if (!form) return false;
+
+        // Translate labels
+        form.querySelectorAll('label').forEach(function(lbl) {
+          var f = (lbl.getAttribute('for') || '').toLowerCase();
+          var t = lbl.textContent.trim().toLowerCase();
+          if      (f.includes('firstname')        || t === 'first name')               lbl.textContent = 'Nama Depan';
+          else if (f.includes('lastname')         || t === 'last name')                lbl.textContent = 'Nama Belakang';
+          else if (f.includes('email')            || t === 'email')                    lbl.textContent = 'Alamat Email *';
+          else if (f.includes('password_confirm') || t.includes('confirm'))            lbl.textContent = 'Konfirmasi Kata Sandi *';
+          else if (f.includes('password')         || t === 'password')                 lbl.textContent = 'Kata Sandi *';
+        });
+
+        // Translate placeholders
+        form.querySelectorAll('input').forEach(function(inp) {
+          var n = (inp.getAttribute('name') || inp.getAttribute('id') || '').toLowerCase();
+          if      (n.includes('firstname'))        inp.placeholder = 'Nama depan';
+          else if (n.includes('lastname'))         inp.placeholder = 'Nama belakang';
+          else if (n.includes('email'))            inp.placeholder = 'email@example.com';
+          else if (n.includes('password_confirm')) inp.placeholder = 'Ulangi kata sandi';
+          else if (n.includes('password'))         inp.placeholder = 'Minimal 8 karakter';
+        });
+
+        var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
+        if (submitBtn) { submitBtn.textContent = 'Buat Akun'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
+
+        // Remove Zammad cancel link — we use our own back button
+        form.querySelectorAll('a[href="#login"], a.btn--secondary').forEach(function(l) { l.remove(); });
+
+        var formBodyEl = document.createElement('div');
+        formBodyEl.className = 'diskominfo-form-content';
+        formBodyEl.appendChild(form);
+
+        mountSplitScreen(loginRoot, function(inner) {
+          inner.appendChild(buildBackButton());
+
+          var hdr = document.createElement('div');
+          hdr.className = 'diskominfo-form-header';
+          hdr.innerHTML =
+            '<h1 class="diskominfo-main-title">Daftar Akun Baru</h1>' +
+            '<p class="diskominfo-main-subtitle">Isi data diri Anda untuk membuat akun IT Helpdesk Diskominfo</p>';
+          inner.appendChild(hdr);
+
+          inner.appendChild(formBodyEl);
+        });
+        return true;
+      }
+
+      /* ── Password Reset view ─────────────────────────────── */
+
+      function enhancePasswordReset(loginRoot, heroUnit) {
+        var logoImg = heroUnit.querySelector('.company-logo') || heroUnit.querySelector('.diskominfo-hero-logo');
+        if (logoImg && logoImg.getAttribute('src')) logoUrlCache = logoImg.getAttribute('src');
+
+        var form = heroUnit.querySelector('form#password_reset') || heroUnit.querySelector('form#password-reset') || heroUnit.querySelector('form');
+        if (!form) return false;
+
+        var lbl = form.querySelector('label');
+        if (lbl) lbl.textContent = 'Username atau Alamat Email *';
+
+        var inp = form.querySelector('input[type="text"], input[type="email"], input:not([type="hidden"])');
+        if (inp) inp.placeholder = 'Masukkan username atau email Anda';
+
+        var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
+        if (submitBtn) { submitBtn.textContent = 'Kirim Tautan Reset'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
+
+        form.querySelectorAll('a[href="#login"], a.btn--secondary').forEach(function(l) { l.remove(); });
+
+        var formBodyEl = document.createElement('div');
+        formBodyEl.className = 'diskominfo-form-content';
+        formBodyEl.appendChild(form);
+
+        mountSplitScreen(loginRoot, function(inner) {
+          inner.appendChild(buildBackButton());
+
+          var hdr = document.createElement('div');
+          hdr.className = 'diskominfo-form-header';
+          hdr.innerHTML =
+            '<h1 class="diskominfo-main-title">Lupa Kata Sandi?</h1>' +
+            '<p class="diskominfo-main-subtitle">Masukkan email atau username Anda. Kami akan mengirimkan tautan untuk mereset kata sandi.</p>';
+          inner.appendChild(hdr);
+
+          inner.appendChild(formBodyEl);
+        });
+        return true;
+      }
+
+      /* ── Main dispatcher ─────────────────────────────────── */
+
+      function enhanceView() {
         var loginRoot = document.querySelector('#app .login');
         if (!loginRoot) return;
-
-        if (loginRoot.classList.contains('diskominfo-fullscreen-enhanced-v2')) return;
 
         var heroUnit = loginRoot.querySelector('.hero-unit') || loginRoot.querySelector('.diskominfo-login-card');
         if (!heroUnit) return;
 
-        var logoImg = heroUnit.querySelector('.company-logo') || heroUnit.querySelector('.diskominfo-hero-logo');
-        var logoUrl = logoImg ? logoImg.getAttribute('src') : '';
+        var hash = getHash();
 
-        var form = heroUnit.querySelector('form#login');
+        // Avoid double-enhancing the same hash state
+        if (loginRoot.dataset.diskominfoState === hash) return;
 
-        // Left Hero Section (50% Fullscreen Call Center Theme)
-        var heroSection = document.createElement('div');
-        heroSection.className = 'diskominfo-hero-section';
-        heroSection.innerHTML = `
-          <div class="diskominfo-hero-overlay"></div>
-          <div class="diskominfo-hero-header">
-            ${logoUrl ? `<img class="diskominfo-hero-logo" src="${logoUrl}" alt="Diskominfo">` : ''}
-            <span class="diskominfo-hero-brand-name">Diskominfo</span>
-          </div>
-          <div class="diskominfo-hero-footer">
-            <blockquote class="diskominfo-hero-quote">
-              “Pelayanan responsif, cepat, dan transparan untuk seluruh kebutuhan teknologi informasi Anda.”
-            </blockquote>
-            <div class="diskominfo-quote-author">IT Helpdesk Diskominfo</div>
-            <div class="diskominfo-quote-dept">Pemerintah Kabupaten Bandung</div>
-          </div>
-        `;
+        var ok = false;
+        if      (hash === 'login' || hash === '')   ok = enhanceLogin(loginRoot, heroUnit);
+        else if (hash === 'signup')                  ok = enhanceSignup(loginRoot, heroUnit);
+        else if (hash === 'password_reset')          ok = enhancePasswordReset(loginRoot, heroUnit);
 
-        // Right Form Section (50% Fullscreen)
-        var formSection = document.createElement('div');
-        formSection.className = 'diskominfo-form-section';
-
-        var formInnerWrapper = document.createElement('div');
-        formInnerWrapper.className = 'diskominfo-form-inner-wrapper';
-
-        var formHeader = document.createElement('div');
-        formHeader.className = 'diskominfo-form-header';
-        formHeader.innerHTML = `
-          <h1 class="diskominfo-main-title">Selamat Datang</h1>
-          <p class="diskominfo-main-subtitle">Layanan Bantuan Teknologi Informasi Diskominfo Kabupaten Bandung</p>
-        `;
-        formInnerWrapper.appendChild(formHeader);
-
-        var maintenanceAlert = loginRoot.querySelector('.js-maintenanceMode, .js-maintenanceLogin');
-        if (maintenanceAlert) {
-          formInnerWrapper.appendChild(maintenanceAlert);
-        }
-
-        var formBody = document.createElement('div');
-        formBody.className = 'diskominfo-form-content';
-
-        if (form) {
-          var usernameLabel = form.querySelector('label[for="username"]');
-          if (usernameLabel) usernameLabel.textContent = 'Username / Email';
-
-          var usernameInput = form.querySelector('#username');
-          if (usernameInput) usernameInput.placeholder = 'Masukkan username atau email';
-
-          var passwordLabel = form.querySelector('label[for="password"]');
-          if (passwordLabel) passwordLabel.textContent = 'Kata Sandi';
-
-          var passwordInput = form.querySelector('#password');
-          if (passwordInput) passwordInput.placeholder = '••••••••';
-
-          var rememberMeLabel = form.querySelector('.checkbox-replacement .label-text');
-          if (rememberMeLabel) rememberMeLabel.textContent = 'Ingat saya';
-
-          var forgotLink = form.querySelector('a[href="#password_reset"], .btn--secondary, .diskominfo-forgot-password-link');
-          if (forgotLink) {
-            forgotLink.textContent = 'Lupa kata sandi?';
-            forgotLink.className = 'diskominfo-forgot-password-link';
-          }
-
-          var rememberGroup = form.querySelector('.checkbox-replacement') ? form.querySelector('.checkbox-replacement').closest('.form-group') : null;
-          if (rememberGroup) {
-            rememberGroup.classList.add('form-group--inline-actions');
-            if (forgotLink && forgotLink.parentNode !== rememberGroup) {
-              rememberGroup.appendChild(forgotLink);
-            }
-          }
-
-          var submitBtn = form.querySelector('button[type="submit"]');
-          if (submitBtn) {
-            submitBtn.textContent = 'Masuk';
-            submitBtn.className = 'btn btn--primary btn--diskominfo-submit';
-          }
-
-          var authProviders = heroUnit.querySelector('.auth-providers');
-          if (authProviders) authProviders.remove();
-          var separator = heroUnit.querySelector('.separator');
-          if (separator) separator.remove();
-
-          formBody.appendChild(form);
-        }
-
-        formInnerWrapper.appendChild(formBody);
-
-        var footerSection = document.createElement('div');
-        footerSection.className = 'js-footer diskominfo-footer-section';
-
-        var footerHtml = `
-          <div class="diskominfo-support-info" style="text-align:center;margin:0 auto 16px auto;max-width:400px;display:block;color:#64748b;font-size:13px;line-height:1.6;">
-            <span style="display:block;text-align:center;">Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.</span>
-            <a href="#password_reset" class="diskominfo-link" style="display:block;text-align:center;margin-top:4px;color:#0b5ed7;font-weight:600;text-decoration:none;">Anda dapat meminta kata sandi baru di sini.</a>
-          </div>
-          <div class="diskominfo-register-row">
-            <span class="diskominfo-register-prompt">Belum memiliki akun?</span>
-            <a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>
-          </div>
-        `;
-        footerSection.innerHTML = footerHtml;
-        formInnerWrapper.appendChild(footerSection);
-
-        formSection.appendChild(formInnerWrapper);
-
-        loginRoot.innerHTML = '';
-        loginRoot.appendChild(heroSection);
-        loginRoot.appendChild(formSection);
-
-        var strayPoweredBy = document.querySelectorAll('.poweredBy, .diskominfo-powered-by');
-        strayPoweredBy.forEach(function(el) { el.remove(); });
-
-        loginRoot.classList.add('diskominfo-fullscreen-enhanced-v2');
+        if (ok) loginRoot.dataset.diskominfoState = hash;
       }
 
-      var observer = new MutationObserver(enhanceLoginView);
-      observer.observe(document.documentElement, { childList: true, subtree: true });
-      window.addEventListener('hashchange', function() {
-        setTimeout(enhanceLoginView, 50);
+      /* ── Bootstrap ───────────────────────────────────────── */
+
+      var observer = new MutationObserver(function() {
+        var lr = document.querySelector('#app .login');
+        if (lr) enhanceView();
       });
-      document.addEventListener('DOMContentLoaded', enhanceLoginView);
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+
+      window.addEventListener('hashchange', function() {
+        // Clear state so the new hash gets a fresh enhancement pass
+        var lr = document.querySelector('#app .login');
+        if (lr) delete lr.dataset.diskominfoState;
+        setTimeout(enhanceView, 80);
+      });
+
+      document.addEventListener('DOMContentLoaded', enhanceView);
     })();
   <% end -%>
   <%= csrf_meta_tags %>
