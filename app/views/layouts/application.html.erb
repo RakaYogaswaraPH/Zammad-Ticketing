@@ -789,7 +789,6 @@
         } else if (hash === 'password_reset') {
           root = document.querySelector('#app .reset_password');
         }
-        // Fallback: any public fullscreen container (in case class changes)
         if (!root) root = document.querySelector('#app .fullscreen');
         return { root: root, hash: hash };
       }
@@ -798,20 +797,18 @@
         var rh = getRootAndHash();
         if (!rh.root) return;
 
-        var root    = rh.root;
-        var hash    = rh.hash;
+        var root     = rh.root;
+        var hash     = rh.hash;
+
+        // Guard: if .hero-unit is NOT present, our layout is already in place — skip.
+        // If .hero-unit IS present, Zammad has rendered or re-rendered (e.g. after login error) — enhance.
+        // This correctly handles re-renders triggered by failed login, signup, etc.
         var heroUnit = root.querySelector('.hero-unit');
         if (!heroUnit) return;
 
-        // Avoid double-enhancing the same element for the same hash
-        if (root.dataset.diskominfoState === hash) return;
-
-        var ok = false;
-        if      (hash === 'login' || hash === '')   ok = enhanceLogin(root, heroUnit);
-        else if (hash === 'signup')                  ok = enhanceSignup(root, heroUnit);
-        else if (hash === 'password_reset')          ok = enhancePasswordReset(root, heroUnit);
-
-        if (ok) root.dataset.diskominfoState = hash;
+        if      (hash === 'login' || hash === '')   enhanceLogin(root, heroUnit);
+        else if (hash === 'signup')                  enhanceSignup(root, heroUnit);
+        else if (hash === 'password_reset')          enhancePasswordReset(root, heroUnit);
       }
 
       /* ── Bootstrap ───────────────────────────────────────── */
@@ -820,11 +817,6 @@
       observer.observe(document.documentElement, { childList: true, subtree: true });
 
       window.addEventListener('hashchange', function() {
-        // Clear state on all possible roots so new hash gets a fresh pass
-        ['#app .login', '#app .signup', '#app .reset_password', '#app .fullscreen'].forEach(function(sel) {
-          var el = document.querySelector(sel);
-          if (el) delete el.dataset.diskominfoState;
-        });
         setTimeout(enhanceView, 100);
       });
 
