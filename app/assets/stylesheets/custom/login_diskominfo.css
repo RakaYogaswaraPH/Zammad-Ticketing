@@ -96,9 +96,9 @@ body,
 .diskominfo-splash-progress-track {
   width: 100% !important;
   max-width: 260px !important;
-  height: 6px !important;
+  height: 10px !important;
   background-color: #e2e8f0 !important;
-  border-radius: 6px !important;
+  border-radius: 10px !important;
   overflow: hidden !important;
   position: relative !important;
   margin-bottom: 14px !important;
@@ -486,6 +486,12 @@ body,
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
   animation: diskominfoAlertSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   margin-bottom: 20px !important;
+}
+
+/* Login Button Loading Spinner */
+@keyframes dkSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Submit Button */

@@ -903,7 +903,74 @@
         }
 
         var submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) { submitBtn.textContent = 'Masuk'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
+        if (submitBtn) {
+          submitBtn.textContent = 'Masuk';
+          submitBtn.className = 'btn btn--primary btn--diskominfo-submit';
+
+          // ── Login button loading state ─────────────────────────
+          form.addEventListener('submit', function() {
+            var btn = form.querySelector('button[type="submit"]');
+            if (!btn || btn.dataset.loading === '1') return;
+            btn.dataset.loading = '1';
+
+            var pct = 0;
+            var pctSpan = document.createElement('span');
+            pctSpan.style.cssText = 'margin-left:8px;font-size:13px;font-weight:600;opacity:0.9;';
+            pctSpan.textContent = '0%';
+
+            btn.textContent = '';
+
+            // Spinner SVG
+            var spinner = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            spinner.setAttribute('width', '18');
+            spinner.setAttribute('height', '18');
+            spinner.setAttribute('viewBox', '0 0 24 24');
+            spinner.setAttribute('fill', 'none');
+            spinner.setAttribute('stroke', 'currentColor');
+            spinner.setAttribute('stroke-width', '2.5');
+            spinner.style.cssText = 'animation:dkSpin 0.7s linear infinite;flex-shrink:0;';
+            var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', '12'); circle.setAttribute('cy', '12'); circle.setAttribute('r', '10');
+            circle.setAttribute('stroke-dasharray', '31.4'); circle.setAttribute('stroke-dashoffset', '10');
+            circle.setAttribute('stroke-opacity', '0.3');
+            var arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            arc.setAttribute('d', 'M12 2 a10 10 0 0 1 7.07 2.93');
+            arc.setAttribute('stroke', 'currentColor');
+            spinner.appendChild(circle);
+            spinner.appendChild(arc);
+
+            var label = document.createElement('span');
+            label.textContent = 'Sedang masuk...';
+            label.style.cssText = 'margin-left:8px;';
+
+            btn.appendChild(spinner);
+            btn.appendChild(label);
+            btn.appendChild(pctSpan);
+            btn.disabled = false; // let Zammad's formDisable handle it
+
+            var loginTimer = setInterval(function() {
+              if (pct < 88) {
+                pct += Math.floor(Math.random() * 6) + 2;
+                if (pct > 88) pct = 88;
+                pctSpan.textContent = pct + '%';
+              }
+            }, 120);
+
+            // Watch for error alert or form re-render (reset button)
+            var resetObserver = new MutationObserver(function() {
+              var alert = document.querySelector('.alert--danger, .alert-danger');
+              if (alert) {
+                clearInterval(loginTimer);
+                resetObserver.disconnect();
+                btn.dataset.loading = '0';
+                btn.disabled = false;
+                btn.textContent = 'Masuk';
+                btn.className = 'btn btn--primary btn--diskominfo-submit';
+              }
+            });
+            resetObserver.observe(document.body, { childList: true, subtree: true });
+          });
+        }
 
         heroUnit.querySelectorAll('.auth-providers, .separator').forEach(function(e) { e.remove(); });
 

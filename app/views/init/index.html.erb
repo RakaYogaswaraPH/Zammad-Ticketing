@@ -64,49 +64,51 @@
     var splashEl = document.getElementById('diskominfo-splash-screen');
     var current = 0;
 
-    var timer = setInterval(function() {
-      if (current < 92) {
-        current += Math.floor(Math.random() * 8) + 3;
-        if (current > 92) current = 92;
-      }
-      if (barEl) barEl.style.width = current + '%';
-      if (percentEl) percentEl.textContent = current + '%';
-    }, 100);
-
-    function finishLoading() {
-      if (current >= 100) return;
-      current = 100;
-      clearInterval(timer);
-      if (barEl) barEl.style.width = '100%';
-      if (percentEl) percentEl.textContent = '100%';
-
-      setTimeout(function() {
-        if (splashEl) {
-          splashEl.style.opacity = '0';
-          splashEl.style.transition = 'opacity 0.4s ease-out';
-          setTimeout(function() {
-            splashEl.style.display = 'none';
-          }, 400);
+    setTimeout(function() {
+      var timer = setInterval(function() {
+        if (current < 92) {
+          current += Math.floor(Math.random() * 8) + 3;
+          if (current > 92) current = 92;
         }
-      }, 200);
-    }
+        if (barEl) barEl.style.width = current + '%';
+        if (percentEl) percentEl.textContent = current + '%';
+      }, 100);
 
-    if (splashEl) {
-      var splashObserver = new MutationObserver(function() {
-        if (splashEl.style.display === 'none' || splashEl.classList.contains('is-hidden')) {
+      function finishLoading() {
+        if (current >= 100) return;
+        current = 100;
+        clearInterval(timer);
+        if (barEl) barEl.style.width = '100%';
+        if (percentEl) percentEl.textContent = '100%';
+
+        setTimeout(function() {
+          if (splashEl) {
+            splashEl.style.opacity = '0';
+            splashEl.style.transition = 'opacity 0.4s ease-out';
+            setTimeout(function() {
+              splashEl.style.display = 'none';
+            }, 400);
+          }
+        }, 200);
+      }
+
+      if (splashEl) {
+        var splashObserver = new MutationObserver(function() {
+          if (splashEl.style.display === 'none' || splashEl.classList.contains('is-hidden')) {
+            finishLoading();
+          }
+        });
+        splashObserver.observe(splashEl, { attributes: true, attributeFilter: ['style', 'class'] });
+      }
+
+      var checkAppInterval = setInterval(function() {
+        var appEl = document.getElementById('app');
+        var heroUnit = document.querySelector('.hero-unit') || document.querySelector('.diskominfo-hero-section');
+        if (heroUnit || (appEl && appEl.children.length > 0)) {
+          clearInterval(checkAppInterval);
           finishLoading();
         }
-      });
-      splashObserver.observe(splashEl, { attributes: true, attributeFilter: ['style', 'class'] });
-    }
-
-    var checkAppInterval = setInterval(function() {
-      var appEl = document.getElementById('app');
-      var heroUnit = document.querySelector('.hero-unit') || document.querySelector('.diskominfo-hero-section');
-      if (heroUnit || (appEl && appEl.children.length > 0)) {
-        clearInterval(checkAppInterval);
-        finishLoading();
-      }
-    }, 80);
+      }, 80);
+    }, 50);
   })();
 <% end -%>
