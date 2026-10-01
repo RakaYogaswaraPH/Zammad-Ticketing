@@ -75,52 +75,60 @@
     var barEl = document.getElementById('diskominfo-progress-bar');
     var splashEl = document.getElementById('diskominfo-splash-screen');
     var current = 0;
+    var isFinishing = false;
+    var isDone = false;
 
-    setTimeout(function() {
-      var timer = setInterval(function() {
-        if (current < 92) {
-          current += Math.floor(Math.random() * 8) + 3;
-          if (current > 92) current = 92;
-        }
-        if (barEl) barEl.style.width = current + '%';
-        if (percentEl) percentEl.textContent = current + '%';
-      }, 100);
+    function setProgress(val) {
+      if (barEl) barEl.style.width = val + '%';
+      if (percentEl) percentEl.textContent = val + '%';
+    }
 
-      function finishLoading() {
-        if (current >= 100) return;
-        current = 100;
-        clearInterval(timer);
-        if (barEl) barEl.style.width = '100%';
-        if (percentEl) percentEl.textContent = '100%';
+    var timer = setInterval(function() {
+      if (isFinishing || isDone) return;
+      if (current < 92) {
+        current += Math.floor(Math.random() * 8) + 3;
+        if (current > 92) current = 92;
+        setProgress(current);
+      }
+    }, 80);
+
+    function finishLoading() {
+      if (isFinishing || isDone) return;
+      isFinishing = true;
+      clearInterval(timer);
+      setProgress(100);
+
+      // Brief pause so 100% is visible, then start smooth fadeout
+      setTimeout(function() {
+        if (!splashEl) return;
+        splashEl.classList.add('diskominfo-splash-fadeout');
 
         setTimeout(function() {
-          if (splashEl) {
-            splashEl.style.opacity = '0';
-            splashEl.style.transition = 'opacity 0.4s ease-out';
-            setTimeout(function() {
-              splashEl.style.display = 'none';
-            }, 400);
-          }
-        }, 200);
-      }
+          isDone = true;
+          splashEl.style.setProperty('display', 'none', 'important');
+          if (splashEl.parentNode) splashEl.parentNode.removeChild(splashEl);
+        }, 500);
+      }, 200);
+    }
 
-      if (splashEl) {
-        var splashObserver = new MutationObserver(function() {
-          if (splashEl.style.display === 'none' || splashEl.classList.contains('is-hidden')) {
-            finishLoading();
-          }
-        });
-        splashObserver.observe(splashEl, { attributes: true, attributeFilter: ['style', 'class'] });
-      }
-
-      var checkAppInterval = setInterval(function() {
-        var appEl = document.getElementById('app');
-        var heroUnit = document.querySelector('.hero-unit') || document.querySelector('.diskominfo-hero-section');
-        if (heroUnit || (appEl && appEl.children.length > 0)) {
-          clearInterval(checkAppInterval);
+    if (splashEl) {
+      var splashObserver = new MutationObserver(function() {
+        if (isDone) return;
+        if (splashEl.style.display === 'none' && !isFinishing) {
+          splashEl.style.display = 'flex';
           finishLoading();
         }
-      }, 80);
-    }, 50);
+      });
+      splashObserver.observe(splashEl, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    var checkAppInterval = setInterval(function() {
+      var appEl = document.getElementById('app');
+      var heroUnit = document.querySelector('.hero-unit') || document.querySelector('.diskominfo-hero-section') || document.querySelector('.navigation');
+      if (heroUnit || (appEl && appEl.children.length > 0)) {
+        clearInterval(checkAppInterval);
+        finishLoading();
+      }
+    }, 60);
   })();
 <% end -%>
