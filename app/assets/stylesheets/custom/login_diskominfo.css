@@ -630,6 +630,75 @@ body,
 }
 
 /* ==========================================================================
+   Password Reset Success Confirmation Card
+   ========================================================================== */
+.diskominfo-reset-success-card {
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 420px !important;
+  margin: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 8px 0 !important;
+}
+
+.diskominfo-reset-success-icon-wrap {
+  width: 76px !important;
+  height: 76px !important;
+  background: rgba(11, 94, 215, 0.09) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto 24px auto !important;
+  color: #0b5ed7 !important;
+}
+
+.diskominfo-reset-success-title {
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 0 16px 0 !important;
+  letter-spacing: -0.5px !important;
+  text-align: center !important;
+}
+
+.diskominfo-reset-success-desc {
+  font-size: 14.5px !important;
+  color: #475569 !important;
+  line-height: 1.65 !important;
+  margin: 0 auto 32px auto !important;
+  max-width: 380px !important;
+  text-align: center !important;
+}
+
+.diskominfo-reset-success-btn {
+  width: 100% !important;
+  height: 48px !important;
+  margin-bottom: 20px !important;
+}
+
+.diskominfo-reset-retry-wrap {
+  margin-top: 12px !important;
+  text-align: center !important;
+}
+
+.diskominfo-reset-retry-link {
+  color: #0b5ed7 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease-in-out !important;
+}
+
+.diskominfo-reset-retry-link:hover {
+  color: #094bac !important;
+  text-decoration: underline !important;
+}
+
+/* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
 @media (max-width: 900px) {

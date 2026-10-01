@@ -684,6 +684,71 @@
     .login .auth-providers,
     .login .separator {
       display: none !important;
+    /* Password Reset Success Confirmation Card */
+    .diskominfo-reset-success-card {
+      text-align: center !important;
+      width: 100% !important;
+      max-width: 420px !important;
+      margin: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      padding: 8px 0 !important;
+    }
+
+    .diskominfo-reset-success-icon-wrap {
+      width: 76px !important;
+      height: 76px !important;
+      background: rgba(11, 94, 215, 0.09) !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto 24px auto !important;
+      color: #0b5ed7 !important;
+    }
+
+    .diskominfo-reset-success-title {
+      font-size: 28px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 0 0 16px 0 !important;
+      letter-spacing: -0.5px !important;
+      text-align: center !important;
+    }
+
+    .diskominfo-reset-success-desc {
+      font-size: 14.5px !important;
+      color: #475569 !important;
+      line-height: 1.65 !important;
+      margin: 0 auto 32px auto !important;
+      max-width: 380px !important;
+      text-align: center !important;
+    }
+
+    .diskominfo-reset-success-btn {
+      width: 100% !important;
+      height: 48px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .diskominfo-reset-retry-wrap {
+      margin-top: 12px !important;
+      text-align: center !important;
+    }
+
+    .diskominfo-reset-retry-link {
+      color: #0b5ed7 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+      transition: color 0.15s ease-in-out !important;
+    }
+
+    .diskominfo-reset-retry-link:hover {
+      color: #094bac !important;
+      text-decoration: underline !important;
     }
 
     /* Responsive Adaptations */
@@ -1088,23 +1153,24 @@
           mountSplitScreen(loginRoot, function(inner) {
             var card = document.createElement('div');
             card.className = 'diskominfo-reset-success-card';
-            card.style.cssText = 'text-align:center;width:100%;max-width:420px;margin:auto;display:flex;flex-direction:column;align-items:center;';
             card.innerHTML =
-              '<div style="width:72px;height:72px;background:rgba(11,94,215,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;color:#0b5ed7;">' +
-                '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0b5ed7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<div class="diskominfo-reset-success-icon-wrap">' +
+                '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#0b5ed7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
                   '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>' +
                   '<polyline points="22,6 12,13 2,6"></polyline>' +
                 '</svg>' +
               '</div>' +
-              '<h1 class="diskominfo-main-title" style="margin-bottom:12px;">Tautan Reset Terkirim</h1>' +
-              '<p class="diskominfo-main-subtitle" style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:28px;">' +
+              '<h1 class="diskominfo-reset-success-title">Tautan Reset Terkirim</h1>' +
+              '<p class="diskominfo-reset-success-desc">' +
                 'Petunjuk untuk mereset kata sandi telah dikirimkan ke alamat email Anda. Silakan periksa <strong>Kotak Masuk (Inbox)</strong> atau folder <strong>Spam</strong> pada email Anda.' +
               '</p>' +
-              '<a href="#login" class="btn btn--primary btn--diskominfo-submit" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:100%;margin-bottom:16px;">' +
-                'Kembali ke Halaman Login' +
-              '</a>' +
-              '<div style="margin-top:8px;">' +
-                '<a href="#password_reset" class="js-retry-reset-btn" style="color:#0b5ed7;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer;">' +
+              '<div style="width:100%;margin-top:12px;margin-bottom:16px;">' +
+                '<a href="#login" class="btn btn--primary btn--diskominfo-submit diskominfo-reset-success-btn" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:100%;">' +
+                  'Kembali ke Halaman Login' +
+                '</a>' +
+              '</div>' +
+              '<div class="diskominfo-reset-retry-wrap">' +
+                '<a href="#password_reset" class="js-retry-reset-btn diskominfo-reset-retry-link">' +
                   'Belum menerima email? Kirim ulang' +
                 '</a>' +
               '</div>';
@@ -1139,6 +1205,7 @@
         if (submitBtn) {
           submitBtn.textContent = 'Kirim Tautan Reset';
           submitBtn.className = 'btn btn--primary btn--diskominfo-submit';
+          submitBtn.style.cssText = 'margin-top: 24px !important; margin-bottom: 18px !important;';
         }
 
         // Validate email on submit
