@@ -332,6 +332,35 @@
       text-decoration: underline !important;
     }
 
+    /* Alert & Error Animation */
+    @keyframes diskominfoAlertSlideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .alert,
+    .alert--danger,
+    .alert-danger {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 10px !important;
+      padding: 14px 18px !important;
+      font-size: 13.5px !important;
+      font-weight: 500 !important;
+      line-height: 1.5 !important;
+      text-align: center !important;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
+      animation: diskominfoAlertSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      margin-bottom: 20px !important;
+    }
+
     /* Submit Button */
     .btn--diskominfo-submit {
       width: 100% !important;
@@ -345,21 +374,21 @@
       letter-spacing: 0.3px !important;
       box-shadow: 0 4px 14px rgba(11, 94, 215, 0.3) !important;
       cursor: pointer !important;
-      transition: all 0.2s ease-in-out !important;
+      transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
     }
 
     .btn--diskominfo-submit:hover {
-      background-color: #0a58ca !important;
-      box-shadow: 0 6px 18px rgba(11, 94, 215, 0.4) !important;
-      transform: translateY(-1px) !important;
+      background-color: #094bac !important;
+      box-shadow: 0 4px 14px rgba(11, 94, 215, 0.3) !important;
+      transform: none !important;
     }
 
     .btn--diskominfo-submit:active {
-      background-color: #094bac !important;
-      transform: translateY(0) !important;
+      background-color: #083b87 !important;
+      transform: none !important;
     }
 
     /* Footer Section - Center Aligned */
@@ -831,6 +860,27 @@
         }
       }
 
+      /* ── Alert & Error Message Indonesian Enhancer ─────────── */
+
+      function enhanceAlerts() {
+        var alerts = document.querySelectorAll('.alert, .alert--danger, .alert-danger, [role="alert"]');
+        alerts.forEach(function(alertEl) {
+          var txt = (alertEl.textContent || '').trim();
+
+          if (txt.includes('Login failed') || txt.includes('kredensial') || txt.includes('credentials') || txt.includes('verification step')) {
+            alertEl.textContent = 'Gagal masuk. Mohon periksa kembali username/email dan kata sandi Anda.';
+          } else if (txt.includes('two-factor') || txt.includes('2FA') || txt.includes('autentikasi dua faktor')) {
+            alertEl.textContent = 'Gagal masuk. Silakan periksa kembali metode autentikasi dua faktor Anda.';
+          } else if (txt.includes('Could not process your request') || txt.includes('process your request')) {
+            alertEl.textContent = 'Gagal memproses permintaan Anda. Silakan coba lagi.';
+          } else if (txt.includes('Due to inactivity') || txt.includes('automatically logged out')) {
+            alertEl.textContent = 'Sesi Anda telah berakhir karena tidak ada aktivitas. Silakan masuk kembali.';
+          } else if (txt.includes('session is no longer valid') || txt.includes('session_invalid')) {
+            alertEl.textContent = 'Sesi tidak valid lagi. Silakan masuk kembali.';
+          }
+        });
+      }
+
       function enhanceView() {
         var rh = getRootAndHash();
         if (!rh.root) return;
@@ -846,6 +896,7 @@
         else if (hash === 'password_reset')          enhancePasswordReset(root, heroUnit);
 
         fixTitleAndFavicon();
+        enhanceAlerts();
       }
 
       /* ── Bootstrap ───────────────────────────────────────── */
@@ -853,6 +904,7 @@
       var observer = new MutationObserver(function() {
         enhanceView();
         fixTitleAndFavicon();
+        enhanceAlerts();
       });
       observer.observe(document.documentElement, { childList: true, subtree: true });
 
@@ -860,12 +912,14 @@
         setTimeout(function() {
           enhanceView();
           fixTitleAndFavicon();
+          enhanceAlerts();
         }, 100);
       });
 
       document.addEventListener('DOMContentLoaded', function() {
         enhanceView();
         fixTitleAndFavicon();
+        enhanceAlerts();
       });
     })();
   <% end -%>

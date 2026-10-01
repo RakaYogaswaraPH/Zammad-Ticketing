@@ -40,8 +40,18 @@
         <% if @item.showAdminPasswordLogin || user_show_password_login: %>
           <form id="login" class="js-form">
             <% if @item.errorMessage: %>
+              <%
+                msg = @item.errorMessage
+                if msg && (msg.indexOf('Login failed') > -1 || msg.indexOf('credentials') > -1 || msg.indexOf('verification') > -1)
+                  msg = 'Gagal masuk. Mohon periksa kembali username/email dan kata sandi Anda.'
+                else if msg && msg.indexOf('two-factor') > -1
+                  msg = 'Gagal masuk. Silakan periksa kembali metode autentikasi dua faktor Anda.'
+                else if msg && msg.indexOf('Could not process your request') > -1
+                  msg = 'Gagal memproses permintaan Anda. Silakan coba lagi.'
+                end
+              %>
               <div class="alert alert--danger" role="alert">
-                <%- @item.errorMessage %>
+                <%- msg %>
               </div>
             <% end %>
 
