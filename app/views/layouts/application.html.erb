@@ -336,39 +336,60 @@
       pointer-events: none !important;
     }
 
-    /* Single Checkbox Icon Handling */
-    .checkbox-replacement .custom-checkbox-box {
+    /* Hide Zammad SVGs inside checkbox-replacement */
+    .checkbox-replacement .icon,
+    .checkbox-replacement svg:not(.custom-check-svg) {
       display: none !important;
     }
 
-    .checkbox-replacement .icon {
+    /* Checkbox Box (Unchecked) */
+    .checkbox-replacement .checkbox-box {
       width: 18px !important;
       height: 18px !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 4px !important;
+      background-color: #ffffff !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative !important;
+      transition: all 0.15s ease-in-out !important;
       flex-shrink: 0 !important;
-      vertical-align: middle !important;
+      box-sizing: border-box !important;
     }
 
-    .checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-checked {
-      display: none !important;
+    /* Hover state */
+    .checkbox-replacement:hover .checkbox-box {
+      border-color: #0b5ed7 !important;
     }
 
-    .checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-unchecked {
-      display: inline-block !important;
-      color: #94a3b8 !important;
-      fill: #94a3b8 !important;
+    /* White checkmark inside the checkbox box using CSS ::after */
+    .checkbox-replacement .checkbox-box::after {
+      content: "" !important;
+      width: 4px !important;
+      height: 8px !important;
+      border: solid #ffffff !important;
+      border-width: 0 2px 2px 0 !important;
+      transform: rotate(45deg) scale(0) !important;
+      position: absolute !important;
+      top: 1.5px !important;
+      left: 5px !important;
+      opacity: 0 !important;
+      transition: transform 0.15s ease-in-out, opacity 0.15s ease-in-out !important;
     }
 
-    .checkbox-replacement input[type="checkbox"]:checked ~ .icon-unchecked {
-      display: none !important;
+    /* Checked State */
+    .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box {
+      background-color: #0b5ed7 !important;
+      border-color: #0b5ed7 !important;
     }
 
-    .checkbox-replacement input[type="checkbox"]:checked ~ .icon-checked {
-      display: inline-block !important;
-      color: #0b5ed7 !important;
-      fill: #0b5ed7 !important;
+    .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after {
+      opacity: 1 !important;
+      transform: rotate(45deg) scale(1) !important;
     }
 
-    /* Label text color change on checked */
+    /* Label text turns blue when checked */
     .checkbox-replacement input[type="checkbox"]:checked ~ .label-text {
       color: #0b5ed7 !important;
       font-weight: 600 !important;
@@ -745,7 +766,17 @@
         if (cbRepl) {
           var labelTxt = cbRepl.querySelector('.label-text');
           if (labelTxt) labelTxt.textContent = 'Ingat saya';
-          cbRepl.querySelectorAll('.custom-checkbox-box').forEach(function(e) { e.remove(); });
+          cbRepl.querySelectorAll('.custom-checkbox-box, .icon').forEach(function(e) { e.remove(); });
+          if (!cbRepl.querySelector('.checkbox-box')) {
+            var boxSpan = document.createElement('span');
+            boxSpan.className = 'checkbox-box';
+            var inp = cbRepl.querySelector('input[type="checkbox"]');
+            if (inp && inp.nextSibling) {
+              cbRepl.insertBefore(boxSpan, inp.nextSibling);
+            } else {
+              cbRepl.appendChild(boxSpan);
+            }
+          }
         }
 
         var forgotLink = form.querySelector('a[href="#password_reset"]') || form.querySelector('.btn--secondary');

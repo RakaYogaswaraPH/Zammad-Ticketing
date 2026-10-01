@@ -72,8 +72,7 @@
             <div class="form-group form-group--inline-actions">
               <label class="inline-label checkbox-replacement">
                 <input name="remember_me" value="1" type="checkbox">
-                <%- @Icon('checkbox', 'icon-unchecked') %>
-                <%- @Icon('checkbox-checked', 'icon-checked') %>
+                <span class="checkbox-box"></span>
                 <span class="label-text">Ingat saya</span>
               </label>
 
