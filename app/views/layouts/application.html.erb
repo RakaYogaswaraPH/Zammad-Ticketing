@@ -1080,16 +1080,87 @@
         if (logoImg && logoImg.getAttribute('src')) logoUrlCache = logoImg.getAttribute('src');
 
         var form = heroUnit.querySelector('form#password_reset') || heroUnit.querySelector('form#password-reset') || heroUnit.querySelector('form');
+        var retryBtn = heroUnit.querySelector('.retry');
+        var isSentState = !form || retryBtn || heroUnit.textContent.toLowerCase().includes('petunjuk') || heroUnit.textContent.toLowerCase().includes('instructions');
+
+        if (isSentState && !form) {
+          // Render success confirmation state in Diskominfo Split Screen
+          mountSplitScreen(loginRoot, function(inner) {
+            var card = document.createElement('div');
+            card.className = 'diskominfo-reset-success-card';
+            card.style.cssText = 'text-align:center;width:100%;max-width:420px;margin:auto;display:flex;flex-direction:column;align-items:center;';
+            card.innerHTML =
+              '<div style="width:72px;height:72px;background:rgba(11,94,215,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;color:#0b5ed7;">' +
+                '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0b5ed7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>' +
+                  '<polyline points="22,6 12,13 2,6"></polyline>' +
+                '</svg>' +
+              '</div>' +
+              '<h1 class="diskominfo-main-title" style="margin-bottom:12px;">Tautan Reset Terkirim</h1>' +
+              '<p class="diskominfo-main-subtitle" style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:28px;">' +
+                'Petunjuk untuk mereset kata sandi telah dikirimkan ke alamat email Anda. Silakan periksa <strong>Kotak Masuk (Inbox)</strong> atau folder <strong>Spam</strong> pada email Anda.' +
+              '</p>' +
+              '<a href="#login" class="btn btn--primary btn--diskominfo-submit" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:100%;margin-bottom:16px;">' +
+                'Kembali ke Halaman Login' +
+              '</a>' +
+              '<div style="margin-top:8px;">' +
+                '<a href="#password_reset" class="js-retry-reset-btn" style="color:#0b5ed7;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer;">' +
+                  'Belum menerima email? Kirim ulang' +
+                '</a>' +
+              '</div>';
+
+            var retryLink = card.querySelector('.js-retry-reset-btn');
+            if (retryLink) {
+              retryLink.onclick = function(e) {
+                e.preventDefault();
+                window.location.hash = '#login';
+                setTimeout(function() { window.location.hash = '#password_reset'; }, 20);
+              };
+            }
+            inner.appendChild(card);
+          });
+          return true;
+        }
+
         if (!form) return false;
 
         var lbl = form.querySelector('label');
-        if (lbl) lbl.textContent = 'Username atau Alamat Email *';
+        if (lbl) lbl.textContent = 'Alamat Email *';
 
         var inp = form.querySelector('input[type="text"], input[type="email"], input:not([type="hidden"])');
-        if (inp) inp.placeholder = 'Masukkan username atau email Anda';
+        if (inp) {
+          inp.setAttribute('type', 'email');
+          inp.setAttribute('required', 'true');
+          inp.setAttribute('pattern', '[^@\\s]+@[^@\\s]+\\.[^@\\s]+');
+          inp.placeholder = 'contoh: nama@email.com';
+        }
 
         var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
-        if (submitBtn) { submitBtn.textContent = 'Kirim Tautan Reset'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
+        if (submitBtn) {
+          submitBtn.textContent = 'Kirim Tautan Reset';
+          submitBtn.className = 'btn btn--primary btn--diskominfo-submit';
+        }
+
+        // Validate email on submit
+        form.addEventListener('submit', function(ev) {
+          var inputEl = form.querySelector('input[name="username"], input[type="email"], input[type="text"]');
+          var val = inputEl ? inputEl.value.trim() : '';
+
+          if (!val || !val.includes('@') || val.indexOf('@') === 0 || val.indexOf('@') === val.length - 1 || !val.split('@')[1].includes('.')) {
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            var oldAlert = form.querySelector('.alert--danger, .diskominfo-form-error');
+            if (oldAlert) oldAlert.remove();
+
+            var errDiv = document.createElement('div');
+            errDiv.className = 'alert alert--danger diskominfo-form-error';
+            errDiv.textContent = 'Format email tidak valid. Masukkan alamat email yang benar (contoh: nama@email.com).';
+            form.insertBefore(errDiv, form.firstChild);
+            if (inputEl) inputEl.focus();
+            return false;
+          }
+        }, true);
 
         form.querySelectorAll('a[href="#login"], a.btn--secondary').forEach(function(l) { l.remove(); });
 
@@ -1102,7 +1173,7 @@
           hdr.className = 'diskominfo-form-header';
           hdr.innerHTML =
             '<h1 class="diskominfo-main-title">Lupa Kata Sandi?</h1>' +
-            '<p class="diskominfo-main-subtitle">Masukkan email atau username Anda. Kami akan mengirimkan tautan untuk mereset kata sandi.</p>';
+            '<p class="diskominfo-main-subtitle">Masukkan alamat email Anda yang terdaftar. Kami akan mengirimkan tautan untuk mereset kata sandi.</p>';
           inner.appendChild(hdr);
 
           inner.appendChild(formBodyEl);

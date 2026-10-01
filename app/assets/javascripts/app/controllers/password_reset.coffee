@@ -35,7 +35,7 @@ class PasswordReset extends App.ControllerFullPage
 
   render: (params = {}) ->
     configure_attributes = [
-      { name: 'username', display: __('Enter your username or email address'), tag: 'input', type: 'text', limit: 100, null: false, class: 'input span4' }
+      { name: 'username', display: __('Enter your email address'), tag: 'input', type: 'email', limit: 100, null: false, class: 'input span4' }
     ]
 
     params['public_links'] = App.PublicLink.search(
@@ -59,6 +59,16 @@ class PasswordReset extends App.ControllerFullPage
   submit: (e) ->
     e.preventDefault()
     params = @formParam(e.target)
+
+    # Validate email address contains @
+    usernameVal = (params.username || '').trim()
+    if !usernameVal || !usernameVal.includes('@')
+      @notify(
+        type: 'error'
+        msg:  'Format email tidak valid. Masukkan alamat email yang benar (contoh: nama@email.com).'
+      )
+      return
+
     @formDisable(e)
 
     # get data
@@ -89,7 +99,7 @@ class PasswordReset extends App.ControllerFullPage
     details = data.responseJSON || {}
     @notify(
       type: 'error'
-      msg:  details.error_human || details.error || __('Loading failed.')
+      msg:  details.error_human || 'Gagal mengirim tautan reset kata sandi. Pastikan email Anda sudah terdaftar.'
     )
 
 App.Config.set('password_reset', PasswordReset, 'Routes')
