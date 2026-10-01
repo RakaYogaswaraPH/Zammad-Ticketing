@@ -246,14 +246,104 @@ body,
   margin: 12px 0 24px 0 !important;
 }
 
-.form-group--inline-actions .checkbox-replacement {
-  display: flex !important;
+.checkbox-replacement {
+  display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
   color: #475569 !important;
   font-size: 13px !important;
+  font-weight: 500 !important;
   cursor: pointer !important;
+  user-select: none !important;
   margin: 0 !important;
+  position: relative !important;
+  transition: color 0.15s ease-in-out !important;
+}
+
+.checkbox-replacement:hover {
+  color: #0b5ed7 !important;
+}
+
+.checkbox-replacement input[type="checkbox"] {
+  position: absolute !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Zammad Default SVG icon handling if present */
+.checkbox-replacement .icon:not(.custom-check-svg) {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-checked {
+  display: none !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-unchecked {
+  display: inline-block !important;
+  fill: #cbd5e1 !important;
+  color: #cbd5e1 !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:checked ~ .icon-unchecked {
+  display: none !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:checked ~ .icon-checked {
+  display: inline-block !important;
+  fill: #0b5ed7 !important;
+  color: #0b5ed7 !important;
+}
+
+/* Custom Checkbox Box (Guaranteed visual box + checkmark) */
+.checkbox-replacement .custom-checkbox-box {
+  width: 18px !important;
+  height: 18px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 5px !important;
+  background-color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease-in-out !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.checkbox-replacement:hover .custom-checkbox-box {
+  border-color: #0b5ed7 !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:checked ~ .custom-checkbox-box {
+  background-color: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+}
+
+.checkbox-replacement .custom-checkbox-box svg {
+  width: 11px !important;
+  height: 11px !important;
+  stroke: #ffffff !important;
+  stroke-width: 3 !important;
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  transition: all 0.15s ease-in-out !important;
+  display: block !important;
+}
+
+.checkbox-replacement input[type="checkbox"]:checked ~ .custom-checkbox-box svg {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Label text color change on checked */
+.checkbox-replacement input[type="checkbox"]:checked ~ .label-text {
+  color: #0b5ed7 !important;
+  font-weight: 600 !important;
 }
 
 .diskominfo-forgot-password-link {
