@@ -29,20 +29,22 @@
   })(document)
 <% end -%>
 <div id="app"></div>
-<div class="splash diskominfo-gmail-splash">
+<div class="splash diskominfo-gmail-splash" id="diskominfo-splash-screen">
   <div class="diskominfo-splash-container">
     <div class="diskominfo-splash-logo-wrapper">
-      <img class="diskominfo-splash-logo" src="/api/v1/assets/logo/1790659610" alt="Diskominfo Logo" />
+      <img class="diskominfo-splash-logo" src="/api/v1/system_assets/product_logo/1790659610" alt="Diskominfo Logo" />
     </div>
 
     <div class="diskominfo-splash-title">IT Helpdesk</div>
     <div class="diskominfo-splash-sub">Diskominfo Kabupaten Bandung</div>
 
     <div class="diskominfo-splash-progress-track">
-      <div class="diskominfo-splash-progress-bar"></div>
+      <div class="diskominfo-splash-progress-bar" id="diskominfo-progress-bar"></div>
     </div>
 
-    <div class="diskominfo-splash-loading-text">Memuat aplikasi...</div>
+    <div class="diskominfo-splash-loading-text">
+      Memuat aplikasi... <span id="diskominfo-progress-percent">0%</span>
+    </div>
   </div>
   <noscript>
     <style>
@@ -54,3 +56,57 @@
     </div>
   </noscript>
 </div>
+
+<%= javascript_tag nonce: true do -%>
+  (function() {
+    var percentEl = document.getElementById('diskominfo-progress-percent');
+    var barEl = document.getElementById('diskominfo-progress-bar');
+    var splashEl = document.getElementById('diskominfo-splash-screen');
+    var current = 0;
+
+    var timer = setInterval(function() {
+      if (current < 92) {
+        current += Math.floor(Math.random() * 8) + 3;
+        if (current > 92) current = 92;
+      }
+      if (barEl) barEl.style.width = current + '%';
+      if (percentEl) percentEl.textContent = current + '%';
+    }, 100);
+
+    function finishLoading() {
+      if (current >= 100) return;
+      current = 100;
+      clearInterval(timer);
+      if (barEl) barEl.style.width = '100%';
+      if (percentEl) percentEl.textContent = '100%';
+
+      setTimeout(function() {
+        if (splashEl) {
+          splashEl.style.opacity = '0';
+          splashEl.style.transition = 'opacity 0.4s ease-out';
+          setTimeout(function() {
+            splashEl.style.display = 'none';
+          }, 400);
+        }
+      }, 200);
+    }
+
+    if (splashEl) {
+      var splashObserver = new MutationObserver(function() {
+        if (splashEl.style.display === 'none' || splashEl.classList.contains('is-hidden')) {
+          finishLoading();
+        }
+      });
+      splashObserver.observe(splashEl, { attributes: true, attributeFilter: ['style', 'class'] });
+    }
+
+    var checkAppInterval = setInterval(function() {
+      var appEl = document.getElementById('app');
+      var heroUnit = document.querySelector('.hero-unit') || document.querySelector('.diskominfo-hero-section');
+      if (heroUnit || (appEl && appEl.children.length > 0)) {
+        clearInterval(checkAppInterval);
+        finishLoading();
+      }
+    }, 80);
+  })();
+<% end -%>
