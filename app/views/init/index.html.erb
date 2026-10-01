@@ -28,11 +28,23 @@
     xhr.send()
   })(document)
 <% end -%>
+<%
+  logo_asset = begin
+    Service::SystemAssets.backend('product_logo')&.sendable_asset
+  rescue => e
+    nil
+  end
+  logo_src = if logo_asset
+    "data:#{logo_asset.type};base64,#{Base64.strict_encode64(logo_asset.content)}"
+  else
+    "/api/v1/system_assets/product_logo/#{Setting.get('product_logo')}"
+  end
+-%>
 <div id="app"></div>
 <div class="splash diskominfo-gmail-splash" id="diskominfo-splash-screen">
   <div class="diskominfo-splash-container">
     <div class="diskominfo-splash-logo-wrapper">
-      <img class="diskominfo-splash-logo" src="/api/v1/system_assets/product_logo/1790659610" alt="Diskominfo Logo" />
+      <img class="diskominfo-splash-logo" src="<%= logo_src %>" alt="Diskominfo Logo" fetchpriority="high" loading="eager" />
     </div>
 
     <div class="diskominfo-splash-title">IT Helpdesk</div>

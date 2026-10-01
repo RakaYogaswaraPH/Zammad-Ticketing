@@ -796,7 +796,7 @@
 
   <%= javascript_tag nonce: true do -%>
     (function() {
-      var logoUrlCache = '';
+      var logoUrlCache = '/api/v1/system_assets/product_logo/<%= Setting.get("product_logo") %>';
 
       /* ── Helpers ─────────────────────────────────────────── */
 
