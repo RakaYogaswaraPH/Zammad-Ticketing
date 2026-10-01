@@ -336,11 +336,16 @@
       pointer-events: none !important;
     }
 
-    /* Zammad Default SVG icon handling if present */
-    .checkbox-replacement .icon:not(.custom-check-svg) {
+    /* Single Checkbox Icon Handling */
+    .checkbox-replacement .custom-checkbox-box {
+      display: none !important;
+    }
+
+    .checkbox-replacement .icon {
       width: 18px !important;
       height: 18px !important;
       flex-shrink: 0 !important;
+      vertical-align: middle !important;
     }
 
     .checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-checked {
@@ -349,8 +354,8 @@
 
     .checkbox-replacement input[type="checkbox"]:not(:checked) ~ .icon-unchecked {
       display: inline-block !important;
-      fill: #cbd5e1 !important;
-      color: #cbd5e1 !important;
+      color: #94a3b8 !important;
+      fill: #94a3b8 !important;
     }
 
     .checkbox-replacement input[type="checkbox"]:checked ~ .icon-unchecked {
@@ -359,48 +364,8 @@
 
     .checkbox-replacement input[type="checkbox"]:checked ~ .icon-checked {
       display: inline-block !important;
-      fill: #0b5ed7 !important;
       color: #0b5ed7 !important;
-    }
-
-    /* Custom Checkbox Box (Guaranteed visual box + checkmark) */
-    .checkbox-replacement .custom-checkbox-box {
-      width: 18px !important;
-      height: 18px !important;
-      border: 1.5px solid #cbd5e1 !important;
-      border-radius: 5px !important;
-      background-color: #ffffff !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      transition: all 0.15s ease-in-out !important;
-      flex-shrink: 0 !important;
-      box-sizing: border-box !important;
-    }
-
-    .checkbox-replacement:hover .custom-checkbox-box {
-      border-color: #0b5ed7 !important;
-    }
-
-    .checkbox-replacement input[type="checkbox"]:checked ~ .custom-checkbox-box {
-      background-color: #0b5ed7 !important;
-      border-color: #0b5ed7 !important;
-    }
-
-    .checkbox-replacement .custom-checkbox-box svg {
-      width: 11px !important;
-      height: 11px !important;
-      stroke: #ffffff !important;
-      stroke-width: 3 !important;
-      opacity: 0 !important;
-      transform: scale(0.5) !important;
-      transition: all 0.15s ease-in-out !important;
-      display: block !important;
-    }
-
-    .checkbox-replacement input[type="checkbox"]:checked ~ .custom-checkbox-box svg {
-      opacity: 1 !important;
-      transform: scale(1) !important;
+      fill: #0b5ed7 !important;
     }
 
     /* Label text color change on checked */
@@ -780,17 +745,7 @@
         if (cbRepl) {
           var labelTxt = cbRepl.querySelector('.label-text');
           if (labelTxt) labelTxt.textContent = 'Ingat saya';
-          if (!cbRepl.querySelector('.custom-checkbox-box')) {
-            var boxSpan = document.createElement('span');
-            boxSpan.className = 'custom-checkbox-box';
-            boxSpan.innerHTML = '<svg class="custom-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>';
-            var inp = cbRepl.querySelector('input[type="checkbox"]');
-            if (inp && inp.nextSibling) {
-              cbRepl.insertBefore(boxSpan, inp.nextSibling);
-            } else {
-              cbRepl.appendChild(boxSpan);
-            }
-          }
+          cbRepl.querySelectorAll('.custom-checkbox-box').forEach(function(e) { e.remove(); });
         }
 
         var forgotLink = form.querySelector('a[href="#password_reset"]') || form.querySelector('.btn--secondary');

@@ -74,9 +74,6 @@
                 <input name="remember_me" value="1" type="checkbox">
                 <%- @Icon('checkbox', 'icon-unchecked') %>
                 <%- @Icon('checkbox-checked', 'icon-checked') %>
-                <span class="custom-checkbox-box">
-                  <svg class="custom-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
-                </span>
                 <span class="label-text">Ingat saya</span>
               </label>
 
