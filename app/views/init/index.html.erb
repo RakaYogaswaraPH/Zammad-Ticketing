@@ -29,15 +29,27 @@
   })(document)
 <% end -%>
 <div id="app"></div>
-<div class="splash">
-  <svg class="icon icon-logo"><use xlink:href="<%= icons_url %>#icon-logo" /></svg>
-  <div class="splash-title"><%= Translation.translate(local_assigns[:locale], 'Loading…') %></div>
+<div class="splash diskominfo-gmail-splash">
+  <div class="diskominfo-splash-container">
+    <div class="diskominfo-splash-logo-wrapper">
+      <img class="diskominfo-splash-logo" src="/api/v1/assets/logo/1790659610" alt="Diskominfo Logo" />
+    </div>
+
+    <div class="diskominfo-splash-title">IT Helpdesk</div>
+    <div class="diskominfo-splash-sub">Diskominfo Kabupaten Bandung</div>
+
+    <div class="diskominfo-splash-progress-track">
+      <div class="diskominfo-splash-progress-bar"></div>
+    </div>
+
+    <div class="diskominfo-splash-loading-text">Memuat aplikasi...</div>
+  </div>
   <noscript>
     <style>
       .splash { flex-direction: column; }
       .splash-title { display: none; }
     </style>
-    <div style="margin-top: 16px;">
+    <div style="margin-top: 16px; color: #ef4444; font-weight: 600;">
       <%= Translation.translate(local_assigns[:locale], 'Turn on JavaScript to use Zammad.') %>
     </div>
   </noscript>
