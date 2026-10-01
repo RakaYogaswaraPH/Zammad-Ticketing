@@ -684,6 +684,8 @@
     .login .auth-providers,
     .login .separator {
       display: none !important;
+    }
+
     /* Password Reset Success Confirmation Card */
     .diskominfo-reset-success-card {
       text-align: center !important;
@@ -917,15 +919,18 @@
       }
 
       function buildBackButton() {
-        var btn = document.createElement('button');
-        btn.type = 'button';
+        var btn = document.createElement('a');
+        btn.href = '#login';
         btn.className = 'diskominfo-back-btn';
+        btn.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;gap:6px;background:transparent;background-color:transparent;border:none;color:#64748b;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer;padding:8px 14px;border-radius:8px;transition:all 0.15s ease-in-out;outline:none;box-shadow:none;';
         btn.innerHTML =
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
-          ' Kembali ke Login';
-        btn.onclick = function() { window.location.hash = 'login'; };
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="15 18 9 12 15 6"/></svg>' +
+          '<span>Kembali ke Login</span>';
+        btn.onmouseover = function() { btn.style.color = '#0b5ed7'; btn.style.backgroundColor = '#f1f5f9'; };
+        btn.onmouseout = function() { btn.style.color = '#64748b'; btn.style.backgroundColor = 'transparent'; };
         var wrap = document.createElement('div');
         wrap.className = 'diskominfo-back-wrapper';
+        wrap.style.cssText = 'margin-top:20px;width:100%;text-align:center;display:flex;justify-content:center;';
         wrap.appendChild(btn);
         return wrap;
       }

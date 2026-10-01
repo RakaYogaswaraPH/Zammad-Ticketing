@@ -698,6 +698,42 @@ body,
   text-decoration: underline !important;
 }
 
+/* Back to Login Button */
+.diskominfo-back-wrapper {
+  margin-top: 20px !important;
+  width: 100% !important;
+  text-align: center !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.diskominfo-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  padding: 8px 14px !important;
+  border-radius: 8px !important;
+  transition: all 0.15s ease-in-out !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.diskominfo-back-btn:hover {
+  color: #0b5ed7 !important;
+  background-color: #f1f5f9 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
 /* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
