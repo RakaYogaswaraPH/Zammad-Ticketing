@@ -23,11 +23,15 @@ class Service::User::PasswordReset::Send < Service::Base
 
     result[:url] = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/#{@path[:reset]}#{result[:token].token}"
 
-    NotificationFactory::Mailer.notification(
-      template: 'password_reset',
-      user:     result[:user],
-      objects:  result,
-    )
+    begin
+      NotificationFactory::Mailer.notification(
+        template: 'password_reset',
+        user:     result[:user],
+        objects:  result,
+      )
+    rescue => e
+      Rails.logger.error "Password reset email delivery failed (#{e.class}: #{e.message}). Silently returning true."
+    end
 
     true
   end
