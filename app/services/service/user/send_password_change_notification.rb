@@ -10,12 +10,16 @@ class Service::User::SendPasswordChangeNotification < Service::Base
   end
 
   def execute
-    NotificationFactory::Mailer.notification(
-      template: 'password_change',
-      user:     recipient,
-      objects:  {
-        user: user,
-      }
-    )
+    begin
+      NotificationFactory::Mailer.notification(
+        template: 'password_change',
+        user:     recipient,
+        objects:  {
+          user: user,
+        }
+      )
+    rescue => e
+      Rails.logger.error "Password change notification email failed (#{e.class}: #{e.message}). Silently ignoring."
+    end
   end
 end
