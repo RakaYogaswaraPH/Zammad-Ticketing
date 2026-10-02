@@ -1,14 +1,14 @@
 <div class="signup fullscreen">
   <div class="fullscreen-center">
     <div class="hero-unit fullscreen-body">
-      <h1><%- @T('Registration successful!') %></h1>
-      <p><%- @T('Thanks for joining. Email sent to "%s".', @email) %></p>
-      <p><%- @T('Please click on the link in the verification email.') %> <%- @T('If you don\'t see the email, check other places it might be, like your junk, spam, social, or other folders.') %></p>
+      <h1><%- @T('Pendaftaran Berhasil!') %></h1>
+      <p><%- @T('Terima kasih telah bergabung! Email verifikasi telah dikirim ke "%s".', @email) %></p>
+      <p><%- @T('Silakan klik tautan di email verifikasi untuk mengaktifkan akun Anda.') %> <%- @T('Jika tidak menemukan emailnya, cek folder spam atau junk mail Anda.') %></p>
       <form>
         <input type="hidden" name="email" value="<%= @email %>">
         <div class="form-controls">
-          <a class="btn btn--text btn--subtle js-cancel" href="#login"><%- @T('Go Back') %></a>
-          <button class="btn btn--primary js-submitResend align-right"><%- @T('Resend verification email') %></button>
+          <a class="btn btn--text btn--subtle js-cancel" href="#login"><%- @T('Kembali ke Login') %></a>
+          <button class="btn btn--primary js-submitResend align-right"><%- @T('Kirim Ulang Email Verifikasi') %></button>
         </div>
       </form>
     </div>

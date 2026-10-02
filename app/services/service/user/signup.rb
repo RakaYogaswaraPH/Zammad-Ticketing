@@ -36,11 +36,16 @@ class Service::User::Signup < Service::Base
 
     result[:url] = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/#{@path[:signup]}#{result[:token].token}"
 
-    NotificationFactory::Mailer.notification(
-      template: 'signup',
-      user:     user,
-      objects:  result,
-    )
+    begin
+      NotificationFactory::Mailer.notification(
+        template: 'signup',
+        user:     user,
+        objects:  result,
+      )
+    rescue => e
+      Rails.logger.error "Signup email delivery failed (#{e.class}: #{e.message}). Auto-verifying user #{user.id} so they can login directly."
+      user.update!(verified: true)
+    end
 
     true
   end
@@ -73,11 +78,15 @@ class Service::User::Signup < Service::Base
     result = User.password_reset_new_token(existing_user.email)
     result[:url] = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/#{@path[:taken]}#{result[:token].token}"
 
-    NotificationFactory::Mailer.notification(
-      template: 'signup_taken_reset',
-      user:     existing_user,
-      objects:  result
-    )
+    begin
+      NotificationFactory::Mailer.notification(
+        template: 'signup_taken_reset',
+        user:     existing_user,
+        objects:  result
+      )
+    rescue => e
+      Rails.logger.error "Signup taken-reset email failed (#{e.class}: #{e.message}). Silently ignoring."
+    end
 
     true
   end

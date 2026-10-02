@@ -98,8 +98,12 @@ class Signup extends App.ControllerFullPage
 
         message = if _.isArray(details.notice)
                     App.i18n.translateContent(details.notice[0], details.notice[1])
+                  else if details.error_human
+                    details.error_human
+                  else if details.error
+                    details.error
                   else
-                    details.error_human || details.error || __('User could not be created.')
+                    'Pendaftaran gagal. Pastikan semua data diisi dengan benar.'
 
         @form.showAlert(message)
     )
@@ -136,7 +140,7 @@ class Signup extends App.ControllerFullPage
 
     @notify(
       type:      'error'
-      msg:       details.error || __('Could not process your request')
+      msg:       details.error || 'Terjadi kesalahan. Silakan coba lagi.'
       removeAll: true
     )
 App.Config.set('signup', Signup, 'Routes')

@@ -1,11 +1,14 @@
 <div class="signup fullscreen">
   <div class="fullscreen-center">
     <div class="hero-unit fullscreen-body">
-      <h1><%- @T('Join %s', @C('product_name')) %></h1>
+      <h1><%- @T('Daftar Akun Baru') %></h1>
       <form>
+        <p class="diskominfo-pw-hint" style="font-size:12px;color:#6b7280;margin:4px 0 12px;line-height:1.5;">
+          <%- @T('Syarat kata sandi: minimal 10 karakter, mengandung huruf besar, huruf kecil, dan angka.') %>
+        </p>
         <div class="form-controls">
-          <a class="btn btn--text btn--subtle js-cancel" href="#login"><%- @T('Cancel & Go Back') %></a>
-          <button class="btn btn--primary js-submit align-right"><%- @T('Create my account') %></button>
+          <a class="btn btn--text btn--subtle js-cancel" href="#login"><%- @T('Batal & Kembali') %></a>
+          <button class="btn btn--primary js-submit align-right"><%- @T('Buat Akun Saya') %></button>
         </div>
       </form>
     </div>
