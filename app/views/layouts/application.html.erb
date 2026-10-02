@@ -1156,6 +1156,39 @@
         var logoImg = heroUnit.querySelector('.company-logo') || heroUnit.querySelector('.diskominfo-hero-logo');
         if (logoImg && logoImg.getAttribute('src')) logoUrlCache = logoImg.getAttribute('src');
 
+        // ── Detect post-signup "verify email" state ──────────────
+        // After signup succeeds, Zammad renders signup/verify.jst.eco which has
+        // .js-submitResend button but NO form#signup — show success card instead.
+        var isVerifyState = !heroUnit.querySelector('form#signup') &&
+                            (heroUnit.querySelector('.js-submitResend') ||
+                             heroUnit.textContent.toLowerCase().includes('pendaftaran berhasil') ||
+                             heroUnit.textContent.toLowerCase().includes('registration successful') ||
+                             heroUnit.textContent.toLowerCase().includes('verifikasi'));
+
+        if (isVerifyState) {
+          mountSplitScreen(loginRoot, function(inner) {
+            var card = document.createElement('div');
+            card.className = 'diskominfo-reset-success-card';
+            card.style.cssText = 'animation: diskominfoCardSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) both;';
+            card.innerHTML =
+              '<div class="diskominfo-reset-success-icon-wrap">' +
+                '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0b5ed7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>' +
+                  '<polyline points="22 4 12 14.01 9 11.01"></polyline>' +
+                '</svg>' +
+              '</div>' +
+              '<h1 class="diskominfo-reset-success-title">Pendaftaran Berhasil!</h1>' +
+              '<p class="diskominfo-reset-success-desc">' +
+                'Akun Anda telah berhasil dibuat. Silakan masuk menggunakan email dan kata sandi yang telah Anda daftarkan.' +
+              '</p>' +
+              '<a href="#login" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:8px;text-decoration:none;padding:12px 0;">Masuk Sekarang</a>';
+            inner.appendChild(card);
+            attachSmoothNavLinks(inner);
+          });
+          return true;
+        }
+
+        // ── Normal signup form state ──────────────────────────────
         var form = heroUnit.querySelector('form#signup') || heroUnit.querySelector('form');
         if (!form) return false;
 
@@ -1177,7 +1210,7 @@
           else if (n.includes('lastname'))         inp.placeholder = 'Nama belakang';
           else if (n.includes('email'))            inp.placeholder = 'email@example.com';
           else if (n.includes('password_confirm')) inp.placeholder = 'Ulangi kata sandi';
-          else if (n.includes('password'))         inp.placeholder = 'Minimal 8 karakter';
+          else if (n.includes('password'))         inp.placeholder = 'Minimal 10 karakter';
         });
 
         var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
