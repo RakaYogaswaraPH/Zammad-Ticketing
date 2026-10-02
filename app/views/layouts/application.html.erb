@@ -354,6 +354,29 @@
       overflow-y: auto !important;
     }
 
+    /* Smooth View Transition Animations */
+    @keyframes diskominfoCardSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes diskominfoCardSlideOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.985);
+      }
+    }
+
     .diskominfo-form-inner-wrapper {
       width: 100% !important;
       max-width: 440px !important;
@@ -362,6 +385,14 @@
       flex-direction: column !important;
       text-align: center !important;
       align-items: center !important;
+      animation: diskominfoCardSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      will-change: opacity, transform !important;
+    }
+
+    .diskominfo-form-inner-wrapper.is-navigating-out,
+    .diskominfo-reset-success-card.is-navigating-out {
+      animation: diskominfoCardSlideOut 0.14s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+      pointer-events: none !important;
     }
 
     .diskominfo-form-header {
@@ -696,6 +727,8 @@
       flex-direction: column !important;
       align-items: center !important;
       padding: 8px 0 !important;
+      animation: diskominfoCardSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      will-change: opacity, transform !important;
     }
 
     .diskominfo-reset-success-icon-wrap {
@@ -935,6 +968,33 @@
         return wrap;
       }
 
+      function attachSmoothNavLinks(container) {
+        var links = container.querySelectorAll('a[href^="#"]');
+        links.forEach(function(link) {
+          if (link.dataset.smoothNav === '1') return;
+          link.dataset.smoothNav = '1';
+          link.addEventListener('click', function(e) {
+            var targetHash = link.getAttribute('href');
+            if (!targetHash) return;
+            var cleanTarget = targetHash.replace(/^#\/?/, '') || 'login';
+            var currentClean = (window.location.hash || '#login').replace(/^#\/?/, '') || 'login';
+            if (cleanTarget === currentClean) return;
+            e.preventDefault();
+
+            var formSec = container.querySelector('.diskominfo-form-section') || container;
+            var inner = formSec.querySelector('.diskominfo-form-inner-wrapper') || formSec.querySelector('.diskominfo-reset-success-card') || formSec;
+            if (inner) {
+              inner.classList.add('is-navigating-out');
+              setTimeout(function() {
+                window.location.hash = cleanTarget;
+              }, 120);
+            } else {
+              window.location.hash = cleanTarget;
+            }
+          });
+        });
+      }
+
       function mountSplitScreen(loginRoot, innerPopulateFn) {
         var heroSection  = buildHeroSection();
         var formSection  = buildFormSection();
@@ -944,6 +1004,7 @@
         loginRoot.innerHTML = '';
         loginRoot.appendChild(heroSection);
         loginRoot.appendChild(formSection);
+        attachSmoothNavLinks(loginRoot);
         document.querySelectorAll('.poweredBy, .diskominfo-powered-by').forEach(function(e) { e.remove(); });
       }
 
