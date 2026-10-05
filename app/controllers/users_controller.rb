@@ -918,7 +918,18 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
       current_user_set(user)
     end
 
-    render json: { message: 'ok' }, status: :created
+    output = if user
+               SessionHelper
+                 .json_hash(user)
+                 .merge(
+                   config:     config_frontend,
+                   after_auth: Auth::AfterAuth.run(user, session, options: { initial: true }),
+                 )
+             else
+               { message: 'ok' }
+             end
+
+    render json: output, status: :created
   end
 
   # @summary          Creates a User record with the provided attribute values.

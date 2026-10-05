@@ -1231,9 +1231,22 @@
               '<p class="diskominfo-reset-success-desc">' +
                 'Akun Anda telah berhasil dibuat dan terverifikasi. Silakan klik tombol di bawah ini untuk masuk ke akun Anda.' +
               '</p>' +
-              '<a href="#" onclick="window.location.href=\'/\';return false;" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:16px;text-decoration:none;padding:12px 0;">Masuk Sekarang</a>';
+              '<a href="#" id="js-diskominfo-enter-btn" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:16px;text-decoration:none;padding:12px 0;">Masuk Sekarang</a>';
             inner.appendChild(card);
             attachSmoothNavLinks(inner);
+
+            var enterBtn = card.querySelector('#js-diskominfo-enter-btn');
+            if (enterBtn) {
+              enterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.history && window.history.replaceState) {
+                  window.history.replaceState(null, null, window.location.origin + '/#');
+                }
+                window.location.href = window.location.origin + '/#';
+                window.location.reload();
+              });
+            }
           });
           return true;
         }

@@ -84,6 +84,8 @@ class Signup extends App.ControllerFullPage
     # save user
     user.save(
       done: (r) =>
+        if r && (r.id || r.user_id || r.email)
+          App.Session.set(r)
         public_links = App.PublicLink.search(
           filter:
             screen: ['signup']
