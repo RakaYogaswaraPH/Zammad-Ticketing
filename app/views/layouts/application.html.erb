@@ -1240,11 +1240,8 @@
               enterBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (window.history && window.history.replaceState) {
-                  window.history.replaceState(null, null, window.location.origin + '/#');
-                }
-                window.location.href = window.location.origin + '/#';
-                window.location.reload();
+                // User sudah login melalui App.Auth.login — cukup navigate ke dashboard
+                window.location.hash = '#/';
               });
             }
           });

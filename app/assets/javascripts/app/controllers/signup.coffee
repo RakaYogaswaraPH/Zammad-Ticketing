@@ -84,17 +84,40 @@ class Signup extends App.ControllerFullPage
     # save user
     user.save(
       done: (r) =>
-        if r && (r.id || r.user_id || r.email)
-          App.Session.set(r)
-        public_links = App.PublicLink.search(
-          filter:
-            screen: ['signup']
-          sortBy: 'prio'
+        # Simpan kredensial untuk auto-login
+        loginEmail    = @params.email
+        loginPassword = @params.password
+
+        # Auto-login langsung setelah signup berhasil
+        App.Auth.login(
+          data:
+            username:    loginEmail
+            password:    loginPassword
+            remember_me: false
+          success: (data) =>
+            window._signupAutoLogin = true
+            # Render success card setelah login berhasil
+            public_links = App.PublicLink.search(
+              filter:
+                screen: ['signup']
+              sortBy: 'prio'
+            )
+            @replaceWith(App.view('signup/verify')(
+              email:        @params.email
+              public_links: public_links
+            ))
+          error: =>
+            # Login gagal — fallback ke verify screen biasa
+            public_links = App.PublicLink.search(
+              filter:
+                screen: ['signup']
+              sortBy: 'prio'
+            )
+            @replaceWith(App.view('signup/verify')(
+              email:        @params.email
+              public_links: public_links
+            ))
         )
-        @replaceWith(App.view('signup/verify')(
-          email:        @params.email
-          public_links: public_links
-        ))
       fail: (settings, details) =>
         @formEnable(e)
 
