@@ -29,6 +29,7 @@ class Service::User::Signup < Service::Base
       return true if user_with_email_exists!
 
       user = create_user
+      user.update!(verified: true)
     end
 
     result = ::User.signup_new_token(user)
@@ -43,8 +44,7 @@ class Service::User::Signup < Service::Base
         objects:  result,
       )
     rescue => e
-      Rails.logger.error "Signup email delivery failed (#{e.class}: #{e.message}). Auto-verifying user #{user.id} so they can login directly."
-      user.update!(verified: true)
+      Rails.logger.error "Signup notification email failed (#{e.class}: #{e.message}). Ignoring error since user is already auto-verified."
     end
 
     true

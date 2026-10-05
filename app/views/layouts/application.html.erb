@@ -1118,6 +1118,8 @@
           });
         }
 
+        attachPasswordToggles(form);
+
         heroUnit.querySelectorAll('.auth-providers, .separator').forEach(function(e) { e.remove(); });
 
         var formBodyEl = document.createElement('div');
@@ -1150,6 +1152,49 @@
         return true;
       }
 
+      function attachPasswordToggles(form) {
+        if (!form) return;
+        var inputs = form.querySelectorAll('input[type="password"], input[data-is-pw="1"]');
+        inputs.forEach(function(inp) {
+          if (inp.dataset.pwToggleAttached === '1') return;
+          inp.dataset.pwToggleAttached = '1';
+          inp.dataset.isPw = '1';
+
+          var parent = inp.parentElement;
+          if (parent) {
+            parent.style.position = 'relative';
+          }
+          inp.style.paddingRight = '44px';
+
+          var toggleBtn = document.createElement('button');
+          toggleBtn.type = 'button';
+          toggleBtn.className = 'diskominfo-pw-toggle-btn';
+          toggleBtn.setAttribute('aria-label', 'Lihat kata sandi');
+          toggleBtn.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#64748b;padding:6px;display:flex;align-items:center;justify-content:center;z-index:10;border-radius:4px;outline:none;line-height:1;';
+
+          var eyeIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+          var eyeOffIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+
+          toggleBtn.innerHTML = eyeIcon;
+
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (inp.type === 'password') {
+              inp.type = 'text';
+              toggleBtn.innerHTML = eyeOffIcon;
+              toggleBtn.style.color = '#0b5ed7';
+            } else {
+              inp.type = 'password';
+              toggleBtn.innerHTML = eyeIcon;
+              toggleBtn.style.color = '#64748b';
+            }
+          });
+
+          if (parent) parent.appendChild(toggleBtn);
+        });
+      }
+
       /* ── Signup view ─────────────────────────────────────── */
 
       function enhanceSignup(loginRoot, heroUnit) {
@@ -1179,9 +1224,9 @@
               '</div>' +
               '<h1 class="diskominfo-reset-success-title">Pendaftaran Berhasil!</h1>' +
               '<p class="diskominfo-reset-success-desc">' +
-                'Akun Anda telah berhasil dibuat. Tautan verifikasi telah dikirimkan ke email Anda. Silakan periksa inbox/spam email Anda dan klik tautan verifikasi sebelum masuk.' +
+                'Akun Anda telah berhasil dibuat dan terverifikasi. Silakan klik tombol di bawah ini untuk masuk ke akun Anda.' +
               '</p>' +
-              '<a href="#login" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:8px;text-decoration:none;padding:12px 0;">Kembali ke Halaman Login</a>';
+              '<a href="#login" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:16px;text-decoration:none;padding:12px 0;">Masuk Sekarang</a>';
             inner.appendChild(card);
             attachSmoothNavLinks(inner);
           });
@@ -1212,6 +1257,8 @@
           else if (n.includes('password_confirm')) inp.placeholder = 'Ulangi kata sandi';
           else if (n.includes('password'))         inp.placeholder = 'Minimal 10 karakter';
         });
+
+        attachPasswordToggles(form);
 
         var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
         if (submitBtn) { submitBtn.textContent = 'Buat Akun'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
