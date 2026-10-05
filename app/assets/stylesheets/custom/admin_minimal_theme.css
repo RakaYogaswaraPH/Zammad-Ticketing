@@ -51,10 +51,12 @@ body, #app {
 }
 
 .menu-item:hover,
-.navigation .nav-pills > li > a:hover {
+.navigation .nav-pills > li > a:hover,
+.nav-pills > li > a:hover,
+.sidebar a:hover {
   background: rgba(255, 255, 255, 0.09) !important;
   color: #ffffff !important;
-  transform: translateX(2px);
+  transform: none !important;
 }
 
 .menu-item.is-active,
@@ -140,8 +142,8 @@ body, #app {
 }
 
 .dashboard .stat-widget:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04) !important;
+  transform: none !important;
+  box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.06) !important;
   border-color: #cbd5e1 !important;
 }
 
