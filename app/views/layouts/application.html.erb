@@ -911,6 +911,36 @@
     (function() {
       var logoUrlCache = '/api/v1/system_assets/product_logo/<%= Setting.get("product_logo") %>';
 
+      // ── Auto-login helper (used after signup) ───────────────────
+      window.diskominfoAutoLogin = function() {
+        var raw = null;
+        try { raw = sessionStorage.getItem('_dk_au'); sessionStorage.removeItem('_dk_au'); } catch(e) {}
+        var creds = null;
+        try { creds = raw ? JSON.parse(raw) : null; } catch(e) {}
+
+        if (!creds || !creds.e || !creds.p) {
+          window.location.href = '/';
+          return;
+        }
+
+        var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/v1/sessions', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        if (csrfToken) xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+        xhr.withCredentials = true;
+        xhr.onload = function() { window.location.href = '/'; };
+        xhr.onerror = function() { window.location.href = '/'; };
+        xhr.send(JSON.stringify({
+          username:    creds.e,
+          password:    creds.p,
+          fingerprint: 'signup_auto',
+          remember_me: false
+        }));
+      };
+
       /* ── Helpers ─────────────────────────────────────────── */
 
       function getHash() {
@@ -1229,21 +1259,22 @@
               '</div>' +
               '<h1 class="diskominfo-reset-success-title">Pendaftaran Berhasil!</h1>' +
               '<p class="diskominfo-reset-success-desc">' +
-                'Akun Anda telah berhasil dibuat dan terverifikasi. Silakan klik tombol di bawah ini untuk masuk ke akun Anda.' +
-              '</p>' +
-              '<a href="#" id="js-diskominfo-enter-btn" class="btn btn--primary btn--diskominfo-submit" style="display:block;text-align:center;margin-top:16px;text-decoration:none;padding:12px 0;">Masuk Sekarang</a>';
-            inner.appendChild(card);
-            attachSmoothNavLinks(inner);
+                'Akun Anda telah berhasil dibuat. Klik tombol di bawah untuk langsung masuk.' +
+              '</p>';
 
-            var enterBtn = card.querySelector('#js-diskominfo-enter-btn');
-            if (enterBtn) {
-              enterBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                // User sudah login melalui App.Auth.login — cukup navigate ke dashboard
-                window.location.hash = '#/';
-              });
-            }
+            var loginBtn = document.createElement('button');
+            loginBtn.type = 'button';
+            loginBtn.textContent = 'Masuk Sekarang';
+            loginBtn.className = 'btn btn--primary btn--diskominfo-submit';
+            loginBtn.style.cssText = 'display:block;width:100%;text-align:center;margin-top:16px;padding:12px 0;cursor:pointer;';
+            loginBtn.addEventListener('click', function() {
+              loginBtn.disabled = true;
+              loginBtn.textContent = 'Sedang masuk...';
+              diskominfoAutoLogin();
+            });
+            card.appendChild(loginBtn);
+
+            inner.appendChild(card);
           });
           return true;
         }
@@ -1274,6 +1305,17 @@
         });
 
         attachPasswordToggles(form);
+
+        // Capture credentials for auto-login after signup succeeds
+        var emailInp = form.querySelector('input[name="email"]') || form.querySelector('input[type="email"]');
+        var pwInp    = form.querySelector('input[name="password"]');
+        if (emailInp && pwInp) {
+          form.addEventListener('submit', function() {
+            try {
+              sessionStorage.setItem('_dk_au', JSON.stringify({ e: emailInp.value, p: pwInp.value }));
+            } catch(ex) {}
+          }, true);
+        }
 
         var submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('.btn--primary');
         if (submitBtn) { submitBtn.textContent = 'Buat Akun'; submitBtn.className = 'btn btn--primary btn--diskominfo-submit'; }
