@@ -907,6 +907,17 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
       raise Exceptions::UnprocessableContent, e.message
     end
 
+    user = User.find_by(email: new_params[:email].downcase.strip)
+    if user
+      user.update!(verified: true)
+      session[:user_id] = user.id
+      session[:persistent] = true
+      session[:authentication_type] = 'signup'
+      user.activity_stream_log('session started', user.id, true) rescue nil
+      user.update_last_login rescue nil
+      current_user_set(user)
+    end
+
     render json: { message: 'ok' }, status: :created
   end
 
