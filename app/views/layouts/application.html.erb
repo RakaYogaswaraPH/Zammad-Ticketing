@@ -911,36 +911,6 @@
     (function() {
       var logoUrlCache = '/api/v1/system_assets/product_logo/<%= Setting.get("product_logo") %>';
 
-      // ── Auto-login helper (used after signup) ───────────────────
-      window.diskominfoAutoLogin = function() {
-        var raw = null;
-        try { raw = sessionStorage.getItem('_dk_au'); sessionStorage.removeItem('_dk_au'); } catch(e) {}
-        var creds = null;
-        try { creds = raw ? JSON.parse(raw) : null; } catch(e) {}
-
-        if (!creds || !creds.e || !creds.p) {
-          window.location.href = '/';
-          return;
-        }
-
-        var csrfMeta = document.querySelector('meta[name="csrf-token"]');
-        var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/v1/sessions', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        if (csrfToken) xhr.setRequestHeader('X-CSRF-Token', csrfToken);
-        xhr.withCredentials = true;
-        xhr.onload = function() { window.location.href = '/'; };
-        xhr.onerror = function() { window.location.href = '/'; };
-        xhr.send(JSON.stringify({
-          username:    creds.e,
-          password:    creds.p,
-          fingerprint: 'signup_auto',
-          remember_me: false
-        }));
-      };
-
       /* ── Helpers ─────────────────────────────────────────── */
 
       function getHash() {
@@ -1046,6 +1016,35 @@
 
         var form = heroUnit.querySelector('form#login');
         if (!form) return false;
+
+        // Auto-login handling if redirected from signup
+        var autoCredsRaw = null;
+        try { autoCredsRaw = sessionStorage.getItem('_dk_au'); } catch(e) {}
+        if (autoCredsRaw) {
+          try {
+            var autoCreds = JSON.parse(autoCredsRaw);
+            sessionStorage.removeItem('_dk_au');
+            if (autoCreds && autoCreds.e && autoCreds.p) {
+              var userEl = form.querySelector('#username') || form.querySelector('input[name="username"]');
+              var pwEl   = form.querySelector('#password') || form.querySelector('input[name="password"]');
+              if (userEl && pwEl) {
+                userEl.value = autoCreds.e;
+                pwEl.value   = autoCreds.p;
+                userEl.dispatchEvent(new Event('input', { bubbles: true }));
+                userEl.dispatchEvent(new Event('change', { bubbles: true }));
+                pwEl.dispatchEvent(new Event('input', { bubbles: true }));
+                pwEl.dispatchEvent(new Event('change', { bubbles: true }));
+
+                setTimeout(function() {
+                  var sBtn = form.querySelector('button[type="submit"]');
+                  if (sBtn) {
+                    sBtn.click();
+                  }
+                }, 150);
+              }
+            }
+          } catch(ex) {}
+        }
 
         var el;
         el = form.querySelector('label[for="username"]');                                    if (el) el.textContent = 'Username / Email';
@@ -1270,7 +1269,7 @@
             loginBtn.addEventListener('click', function() {
               loginBtn.disabled = true;
               loginBtn.textContent = 'Sedang masuk...';
-              diskominfoAutoLogin();
+              window.location.hash = '#login';
             });
             card.appendChild(loginBtn);
 
