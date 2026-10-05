@@ -1168,13 +1168,13 @@
           var footer = document.createElement('div');
           footer.className = 'js-footer diskominfo-footer-section';
           footer.innerHTML =
-            '<div class="diskominfo-support-info" style="text-align:center;margin:0 auto 16px auto;max-width:400px;display:block;color:#64748b;font-size:13px;line-height:1.6;">' +
-              '<span style="display:block;text-align:center;">Sudah terdaftar dengan alamat email jika pernah menghubungi tim Support kami.</span>' +
-              '<a href="#password_reset" class="diskominfo-link" style="display:block;text-align:center;margin-top:4px;color:#0b5ed7;font-weight:600;text-decoration:none;">Anda dapat meminta kata sandi baru di sini.</a>' +
-            '</div>' +
             '<div class="diskominfo-register-row">' +
               '<span class="diskominfo-register-prompt">Belum memiliki akun?</span>' +
               '<a href="#signup" class="diskominfo-register-link">Daftar sebagai pengguna baru</a>' +
+            '</div>' +
+            '<div class="diskominfo-powered-watermark" style="margin-top:28px;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0.85;">' +
+              '<span style="font-size:13px;font-weight:600;color:#64748b;letter-spacing:0.3px;">Powered by</span>' +
+              '<img src="/assets/images/icons/full-logo.svg" alt="Zammad" style="height:32px;width:auto;display:inline-block;vertical-align:middle;">' +
             '</div>';
           inner.appendChild(footer);
         });
