@@ -1160,16 +1160,44 @@
     (function() {
       var logoUrlCache = '/api/v1/system_assets/product_logo/<%= Setting.get("product_logo") %>';
 
-      // ── Rename Extended Search to All Tickets ──────────────────
-      function fixExtendedSearchLabels() {
-        document.querySelectorAll('.nav-tab-name, .menu-item-name, a[href="#search"]').forEach(function(el) {
-          var t = (el.textContent || '').trim();
-          if (t === 'Extended Search' || t === 'Pencarian Lanjutan') {
-            el.textContent = 'All Tickets';
+      // ── Ensure All Tickets is ALWAYS present in sidebar menu ────
+      function ensureAllTicketsMenuItem() {
+        var menu = document.querySelector('.js-menu');
+        if (!menu) return;
+
+        var existingBtn = menu.querySelector('a[href="#search"]');
+        if (!existingBtn) {
+          var overviewsBtn = menu.querySelector('a[href^="#ticket/view"]') || menu.querySelector('.menu-item:last-child');
+          
+          var a = document.createElement('a');
+          a.className = 'menu-item js-searchdetailMenuItem';
+          a.href = '#search';
+          a.setAttribute('data-key', 'Search');
+          a.innerHTML =
+            '<svg class="icon menu-item-icon" style="width:18px;height:18px;margin-right:10px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
+            '<span class="menu-item-name">All Tickets</span>';
+          
+          if (overviewsBtn && overviewsBtn.nextSibling) {
+            menu.insertBefore(a, overviewsBtn.nextSibling);
+          } else {
+            menu.appendChild(a);
           }
-        });
+          existingBtn = a;
+        }
+
+        // Keep active state in sync with location hash
+        var isSearch = (window.location.hash || '').indexOf('#search') === 0;
+        if (isSearch) {
+          if (!existingBtn.classList.contains('is-active')) {
+            menu.querySelectorAll('.is-active').forEach(function(el) { el.classList.remove('is-active'); });
+            existingBtn.classList.add('is-active');
+          }
+        } else {
+          existingBtn.classList.remove('is-active');
+        }
       }
-      setInterval(fixExtendedSearchLabels, 300);
+
+      setInterval(ensureAllTicketsMenuItem, 200);
 
       /* ── Helpers ─────────────────────────────────────────── */
 
