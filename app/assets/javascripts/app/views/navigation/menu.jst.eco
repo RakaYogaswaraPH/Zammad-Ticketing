@@ -42,3 +42,9 @@
   </a>
   <% end %>
 <% end %>
+<a class="menu-item js-searchdetailMenuItem" href="#search" data-key="Search">
+  <%- @Icon('searchdetail', 'menu-item-icon') %>
+  <span class="menu-item-name">
+    <%- @T('All Tickets') %>
+  </span>
+</a>
