@@ -561,3 +561,4 @@ class Router extends App.ControllerPermanent
 
 App.Config.set('search', Router, 'Routes')
 App.Config.set('search/:query', Router, 'Routes')
+App.Config.set('Search', { prio: 1100, parent: '', name: __('All Tickets'), target: '#search', key: 'Search', permission: ['ticket.agent'], class: 'searchdetail' }, 'NavBar')
