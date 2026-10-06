@@ -1003,6 +1003,13 @@
       padding-bottom: 4px !important;
     }
 
+    /* Hide duplicate task tab for Search in tasks-navigation */
+    .tasks-navigation a[href="#search"],
+    .tasks-navigation .nav-tab[data-key="Search"],
+    .tasks-navigation .nav-tab--search {
+      display: none !important;
+    }
+
     /* ── 3. Main Content Container (.content) ────────────────────────────────── */
     .content {
       background: var(--background-primary, #f8fafc) !important;
@@ -1184,6 +1191,11 @@
           }
           existingBtn = a;
         }
+
+        // Hide/remove duplicate search task tab in .tasks-navigation
+        document.querySelectorAll('.tasks-navigation a[href="#search"], .tasks-navigation [data-key="Search"]').forEach(function(el) {
+          el.remove();
+        });
 
         // Keep active state in sync with location hash
         var isSearch = (window.location.hash || '').indexOf('#search') === 0;

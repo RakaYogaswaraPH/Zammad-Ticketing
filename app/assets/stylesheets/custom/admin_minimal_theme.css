@@ -95,6 +95,13 @@ body, #app {
   padding-bottom: 4px !important;
 }
 
+/* Hide duplicate task tab for Search in tasks-navigation */
+.tasks-navigation a[href="#search"],
+.tasks-navigation .nav-tab[data-key="Search"],
+.tasks-navigation .nav-tab--search {
+  display: none !important;
+}
+
 /* ── 3. Main Content Container (.content) ────────────────────────────────── */
 .content {
   background: var(--background-primary, #f8fafc) !important;
