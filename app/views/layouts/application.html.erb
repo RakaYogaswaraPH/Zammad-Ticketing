@@ -1168,9 +1168,19 @@
       var logoUrlCache = '/api/v1/system_assets/product_logo/<%= Setting.get("product_logo") %>';
 
       // ── Ensure All Tickets is ALWAYS present in sidebar menu ────
+      function getSearchDetailIconHtml() {
+        if (window.App && window.App.Utils && typeof window.App.Utils.icon === 'function') {
+          return window.App.Utils.icon('searchdetail', 'menu-item-icon');
+        }
+        var path = (window.App && window.App.Config && typeof window.App.Config.get === 'function' && window.App.Config.get('icons_url')) || '';
+        return '<svg class="icon icon-searchdetail menu-item-icon"><use xlink:href="' + path + '#icon-searchdetail"></use></svg>';
+      }
+
       function ensureAllTicketsMenuItem() {
         var menu = document.querySelector('.js-menu');
         if (!menu) return;
+
+        var iconHtml = getSearchDetailIconHtml();
 
         var existingBtn = menu.querySelector('a[href="#search"]');
         if (!existingBtn) {
@@ -1180,9 +1190,7 @@
           a.className = 'menu-item js-searchdetailMenuItem';
           a.href = '#search';
           a.setAttribute('data-key', 'Search');
-          a.innerHTML =
-            '<svg class="icon menu-item-icon"><use xlink:href="#icon-searchdetail"></use></svg>' +
-            '<span class="menu-item-name">All Tickets</span>';
+          a.innerHTML = iconHtml + '<span class="menu-item-name">All Tickets</span>';
           
           if (overviewsBtn && overviewsBtn.nextSibling) {
             menu.insertBefore(a, overviewsBtn.nextSibling);
@@ -1190,6 +1198,16 @@
             menu.appendChild(a);
           }
           existingBtn = a;
+        } else {
+          var svg = existingBtn.querySelector('svg');
+          var useEl = svg ? svg.querySelector('use') : null;
+          var hrefVal = useEl ? (useEl.getAttribute('xlink:href') || useEl.getAttribute('href') || '') : '';
+          
+          if (!svg || !useEl || hrefVal === '#icon-searchdetail') {
+            var nameEl = existingBtn.querySelector('.menu-item-name');
+            var labelText = nameEl ? nameEl.textContent.trim() : 'All Tickets';
+            existingBtn.innerHTML = iconHtml + '<span class="menu-item-name">' + (labelText || 'All Tickets') + '</span>';
+          }
         }
 
         // Hide/remove duplicate search task tab in .tasks-navigation
