@@ -37,40 +37,61 @@ body, #app {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
 }
 
-/* Navigation menu items */
+/* Navigation menu items & task tabs */
 .menu-item,
-.navigation .nav-pills > li > a {
+.navigation .nav-pills > li > a,
+.tasks-navigation .nav-tab,
+.nav-tab {
   border-radius: 10px !important;
-  margin: 3px 8px !important;
+  margin: 6px 10px !important;
   padding: 10px 14px !important;
+  height: 42px !important;
+  box-sizing: border-box !important;
   font-size: 13.5px !important;
   font-weight: 500 !important;
   color: rgba(241, 245, 249, 0.75) !important;
   transition: all 0.18s ease-in-out !important;
+  border: none !important;
   border-bottom: none !important;
 }
 
 .menu-item:hover,
 .navigation .nav-pills > li > a:hover,
 .nav-pills > li > a:hover,
+.tasks-navigation .nav-tab:not(.is-active):hover,
+.nav-tab:hover,
 .sidebar a:hover {
   background: rgba(255, 255, 255, 0.09) !important;
   color: #ffffff !important;
   transform: none !important;
+  border-bottom: none !important;
 }
 
 .menu-item.is-active,
 .menu-item.is-hovered,
-.navigation .nav-pills > li.active > a {
+.navigation .nav-pills > li.active > a,
+.tasks-navigation .nav-tab.is-active,
+.nav-tab.is-active {
   background: #2563eb !important;
   color: #ffffff !important;
   font-weight: 600 !important;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+  border-bottom: none !important;
 }
 
 .menu-item.is-active .menu-item-icon,
-.navigation .nav-pills > li.active > a .icon {
+.navigation .nav-pills > li.active > a .icon,
+.tasks-navigation .nav-tab.is-active .nav-tab-icon .icon,
+.nav-tab.is-active .nav-tab-icon .icon {
   fill: #ffffff !important;
+}
+
+.tasks-navigation {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 
 /* ── 3. Main Content Container (.content) ────────────────────────────────── */

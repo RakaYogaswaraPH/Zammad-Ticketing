@@ -77,7 +77,7 @@ class App.Search extends App.Controller
     App.TicketOverviewCollection.unbindById(@bindId)
 
   meta: =>
-    title = @query || App.i18n.translateInline('Extended Search')
+    title = @query || App.i18n.translateInline('All Tickets')
 
     meta =
       url:   @url()
