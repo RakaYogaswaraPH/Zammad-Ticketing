@@ -24,9 +24,11 @@ class Service::User::Signup < Service::Base
       # The result is always positive to avoid leaking of existing user accounts.
       return true if !user || user.verified == true
     else
-      PasswordPolicy.new(user_data[:password]).valid!
+      if user_with_email_exists!
+        raise Exceptions::UnprocessableContent, __('Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.')
+      end
 
-      return true if user_with_email_exists!
+      PasswordPolicy.new(user_data[:password]).valid!
 
       user = create_user
       user.update!(verified: true)
@@ -72,21 +74,9 @@ class Service::User::Signup < Service::Base
   private
 
   def user_with_email_exists!
-    existing_user = User.find_by(email: user_data[:email].downcase.strip)
+    email_val = user_data[:email].to_s.strip.downcase
+    existing_user = User.find_by('LOWER(email) = :e OR LOWER(login) = :e', e: email_val)
     return false if existing_user.blank?
-
-    result = User.password_reset_new_token(existing_user.email)
-    result[:url] = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/#{@path[:taken]}#{result[:token].token}"
-
-    begin
-      NotificationFactory::Mailer.notification(
-        template: 'signup_taken_reset',
-        user:     existing_user,
-        objects:  result
-      )
-    rescue => e
-      Rails.logger.error "Signup taken-reset email failed (#{e.class}: #{e.message}). Silently ignoring."
-    end
 
     true
   end

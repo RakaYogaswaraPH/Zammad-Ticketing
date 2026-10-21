@@ -83,7 +83,7 @@ returns
 
       # customer assets for other user
       attributes = super
-      attributes.slice('id', 'firstname', 'lastname', 'image', 'image_source', 'active')
+      attributes.slice('id', 'firstname', 'lastname', 'email', 'image', 'image_source', 'active')
     end
 
     def assets_accounts

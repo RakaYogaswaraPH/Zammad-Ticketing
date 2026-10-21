@@ -127,6 +127,11 @@
     <div class="internal-border">
       <div class="textBubble">
         <div class="bubble-arrow"></div>
+        <% authorUser = App.User.find(@article.origin_by_id || @article.created_by_id) %>
+        <% authorName = if authorUser then authorUser.displayName() else (@article.from || @article.sender?.name) %>
+        <div class="article-sender-name <%- if @article.sender.name is 'Agent' then 'is-agent' else 'is-customer' %>">
+          <span class="user-popover u-clickable" data-id="<%= @article.origin_by_id || @article.created_by_id %>"><%= authorName %></span>
+        </div>
         <% if @article.html: %>
           <div class="textBubble-content" id="article-content-<%= @article.id %>" data-id="<%= @article.id %>">
             <div class="richtext-content" dir="auto"><%- @article.html %></div>

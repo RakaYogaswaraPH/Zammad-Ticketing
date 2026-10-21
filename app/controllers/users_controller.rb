@@ -898,10 +898,32 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
       raise Exceptions::UnprocessableContent, __("The required attribute 'email' is missing.")
     end
 
+    # Check if email is already registered
+    email_to_check = new_params[:email].to_s.strip.downcase
+    if User.where('LOWER(email) = :e OR LOWER(login) = :e', e: email_to_check).exists?
+      render json: {
+        error: 'Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.',
+        error_human: 'Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.'
+      }, status: :unprocessable_content
+      return
+    end
+
+    pw_confirm = params[:password_confirm] || (params[:user] && params[:user][:password_confirm])
+    if pw_confirm.present? && pw_confirm != new_params[:password]
+      render json: {
+        error: 'Konfirmasi kata sandi tidak cocok.',
+        error_human: 'Konfirmasi kata sandi tidak cocok.'
+      }, status: :unprocessable_content
+      return
+    end
+
     begin
       Service::User::Deprecated::Signup.execute(user_data: new_params)
     rescue PasswordPolicy::Error => e
       render json: { message: 'failed', notice: e.metadata }, status: :unprocessable_content
+      return
+    rescue Exceptions::UnprocessableContent => e
+      render json: { error: e.message, error_human: e.message }, status: :unprocessable_content
       return
     rescue Service::CheckFeatureEnabled::FeatureDisabledError => e
       raise Exceptions::UnprocessableContent, e.message

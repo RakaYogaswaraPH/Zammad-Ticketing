@@ -58,6 +58,12 @@ class Signup extends App.ControllerFullPage
     if !@params.login && @params.email
       @params.login = @params.email
 
+    # check password confirmation if provided
+    if @params.password_confirm && @params.password && @params.password_confirm isnt @params.password
+      @formEnable(e)
+      @form.showAlert('Konfirmasi kata sandi tidak cocok.')
+      return false
+
     @params.signup = true
     @params.role_ids = []
     @log 'debug', 'updateAttributes', @params
@@ -84,6 +90,11 @@ class Signup extends App.ControllerFullPage
     # save user
     user.save(
       done: (r) =>
+        try
+          if @params.email && @params.password
+            sessionStorage.setItem('_dk_au', JSON.stringify({ e: @params.email, p: @params.password }))
+        catch ex
+          # ignore
         public_links = App.PublicLink.search(
           filter:
             screen: ['signup']
@@ -95,6 +106,10 @@ class Signup extends App.ControllerFullPage
         ))
       fail: (settings, details) =>
         @formEnable(e)
+        try
+          sessionStorage.removeItem('_dk_au')
+        catch ex
+          # ignore
 
         message = if _.isArray(details.notice)
                     App.i18n.translateContent(details.notice[0], details.notice[1])

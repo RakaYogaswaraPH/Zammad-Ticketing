@@ -49,6 +49,44 @@ class App.UiElement.group_permissions extends Spine.Module
       .on('click', '.js-remove', (e) => @onRemoveGroup(e, item, groups))
       .on('click', '.js-add', (e) => @onAddGroup(e, item, groups))
 
+    # Auto-add row when user checks any permission box in the new item row (if group selected)
+    item.on('change click', '.js-groupListNewItemRow .js-groupListItem', (e) =>
+      newGroupId = parseInt(item.find('.js-shadow').val())
+      if newGroupId
+        dummyEvent = {
+          stopPropagation: ->
+          preventDefault: ->
+          target: item.find('.js-add').get(0)
+        }
+        @onAddGroup(dummyEvent, item, groups)
+    )
+
+    # Auto-add row when user selects a group in dropdown (if any permission box already checked)
+    item.on('change', '.js-groupListNewItemRow .js-shadow', (e) =>
+      newGroupId = parseInt(item.find('.js-shadow').val())
+      hasChecked = item.find('.js-groupListNewItemRow .js-groupListItem:checked').length > 0
+      if newGroupId && hasChecked
+        dummyEvent = {
+          stopPropagation: ->
+          preventDefault: ->
+          target: item.find('.js-add').get(0)
+        }
+        @onAddGroup(dummyEvent, item, groups)
+    )
+
+    # Global capture listener on modal Submit button click to ensure pending group is added before formParam runs
+    $(document).off('click.groupPermissionsAutoAdd').on('click.groupPermissionsAutoAdd', '.modal-footer .btn--primary, .modal .js-submit', (e) =>
+      if item.is(':visible')
+        newGroupId = parseInt(item.find('.js-shadow').val())
+        if newGroupId
+          dummyEvent = {
+            stopPropagation: ->
+            preventDefault: ->
+            target: item.find('.js-add').get(0)
+          }
+          @onAddGroup(dummyEvent, item, groups)
+    )
+
   @onRemoveGroup: (e, item, groups) ->
     e.stopPropagation()
     e.preventDefault()

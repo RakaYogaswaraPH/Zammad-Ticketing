@@ -1,13 +1,13 @@
-<div class="stat-widget vertical">
+<div class="stat-widget vertical stat-widget--reopen">
   <div class="stat-title">
-    <%- @T('Reopening rate') %>
-    <div class="stat-icon-help js-stat-help" title="<%- @Ti(@StatsTicketReopen.description) %>" data-placement="left">
+    <%- @T('Tiket Dibuka Kembali') %>
+    <div class="stat-icon-help js-stat-help" title="<%- @Ti('Jumlah akumulasi tiket yang pernah berstatus ditutup lalu dibuka kembali.') %>" data-placement="bottom">
       <%- @Icon('help') %>
     </div>
   </div>
   <div class="stat-graphic">
     <%- @Icon('reopening', "reopening-icon #{@StatsTicketReopen.state}-color") %>
   </div>
-  <div class="stat-label"><%- @T('%s% have been reopened', @StatsTicketReopen.percent) %></div>
-  <div class="stat-detail"><%- @T('Average: %s%', @StatsTicketReopen.average_per_agent) %></div>
+  <div class="stat-label"><%- @T('%s Kali Dibuka Ulang', @StatsTicketReopen.reopen_count || @StatsTicketReopen.count || 0) %></div>
+  <div class="stat-detail"><%- @T('Status Ditutup Lalu Dibuka Ulang') %></div>
 </div>

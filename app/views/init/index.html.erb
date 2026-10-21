@@ -130,5 +130,13 @@
         finishLoading();
       }
     }, 60);
+
+    // Fallback: Never let the preloader hang indefinitely (e.g. mobile networks or delayed DOM elements)
+    setTimeout(function() {
+      if (!isFinishing && !isDone) {
+        clearInterval(checkAppInterval);
+        finishLoading();
+      }
+    }, 3500);
   })();
 <% end -%>

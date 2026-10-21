@@ -2,61 +2,49 @@
 
 class Stats::TicketReopen
 
-  def self.generate(user)
+  def self.generate(_user)
+    closed_state_ids = Ticket::State.by_category_ids(:closed)
+    open_state_ids = Ticket::State.by_category_ids(:open)
 
-    # get my closed tickets
-    total = Ticket.select('id').where(
-      'owner_id = ? AND close_at > ?',
-      user.id, 7.days.ago
-    ).count
+    # Count all state transitions from closed to open across all tickets in history
+    ticket_obj = History::Object.lookup(name: 'Ticket')
+    history_reopens = if ticket_obj
+                        History.where(
+                          history_object_id: ticket_obj.id,
+                          id_from: closed_state_ids,
+                          id_to: open_state_ids
+                        ).count
+                      else
+                        0
+                      end
 
-    # get count of reopens
-    count = StatsStore.where(
-      stats_storable: user,
-      key:            'ticket:reopen',
-    ).where('created_at > ? AND created_at < ?', 7.days.ago, Time.zone.now).count
+    store_reopens = StatsStore.where(key: 'ticket:reopen').count
 
-    if count > total
-      total = count
-    end
+    reopen_count = [history_reopens, store_reopens].max
+    total_tickets = Ticket.count
 
-    reopen_in_precent = 0
-    if total.nonzero?
-      reopen_in_precent = (count.to_f / (total.to_f / 100)).round(1)
-    end
+    state = if reopen_count.zero?
+              'supergood'
+            elsif reopen_count <= 2
+              'good'
+            elsif reopen_count <= 5
+              'ok'
+            else
+              'bad'
+            end
+
     {
-      used_for_average:  reopen_in_precent,
-      percent:           reopen_in_precent,
-      average_per_agent: '-',
-      state:             'good',
-      count:             count,
-      total:             total,
+      used_for_average:  reopen_count,
+      percent:           reopen_count,
+      reopen_count:      reopen_count,
+      average_per_agent: reopen_count,
+      state:             state,
+      count:             reopen_count,
+      total:             total_tickets,
     }
   end
 
   def self.average_state(result, _user_id)
-
-    return result if !result.key?(:used_for_average)
-
-    if result[:total] < 1 || result[:average_per_agent].to_d == BigDecimal('0.0')
-      result[:state] = 'supergood'
-      return result
-    end
-
-    # in_percent = ( result[:used_for_average].to_f / (result[:average_per_agent].to_f / 100) ).round(1)
-    # result[:average_per_agent_in_percent] = in_percent
-    in_percent = (result[:count].to_f / (result[:total].to_f / 100)).round(1)
-    result[:state] = if in_percent >= 90
-                       'superbad'
-                     elsif in_percent >= 65
-                       'bad'
-                     elsif in_percent >= 40
-                       'ok'
-                     elsif in_percent >= 20
-                       'good'
-                     else
-                       'supergood'
-                     end
     result
   end
 
@@ -66,16 +54,7 @@ class Stats::TicketReopen
     ticket = Ticket.lookup(id: o_id)
     return if !ticket
 
-    # check if close_at is already set / if not, ticket is not reopened
-    return if !ticket.close_at
-
-    # only if current owner is not 1
-    return if ticket.owner_id == 1
-
-    # only if state id has changed
     return if !changes['state_id']
-
-    # only if ticket is not created in closed state
     return if !changes['state_id'][0]
 
     state_before      = Ticket::State.lookup(id: changes['state_id'][0])
@@ -87,9 +66,9 @@ class Stats::TicketReopen
     return if state_type_now.name == 'closed'
 
     StatsStore.create(
-      stats_storable: ticket.owner,
+      stats_storable: ticket.owner || User.find_by(id: 1),
       key:            'ticket:reopen',
-      data:           { ticket_id: ticket.id },
+      data:           { ticket_id: ticket.id, reopened_by_id: updated_by_id },
       created_at:     Time.zone.now,
       created_by_id:  updated_by_id,
     )

@@ -104,11 +104,10 @@ class App.TicketZoomAttributeBar extends App.Controller
 
     @setSecondaryAction(@getAction(), localeEl)
 
-    if @ticket.currentView() is 'agent'
-      @taskbarWatcher = new App.TaskbarWatcher(
-        taskKey: @taskKey
-        el:      localeEl.filter('.js-avatars')
-      )
+    @taskbarWatcher = new App.TaskbarWatcher(
+      taskKey: @taskKey
+      el:      localeEl.filter('.js-avatars')
+    )
 
     @html localeEl
 

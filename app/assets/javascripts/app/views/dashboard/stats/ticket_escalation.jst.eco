@@ -1,13 +1,25 @@
-<div class="stat-widget vertical">
+<div class="stat-widget vertical stat-widget--rating">
   <div class="stat-title">
-    <%- @T('Mood') %>
-    <div class="stat-icon-help js-stat-help" title="<%- @Ti(@StatsTicketEscalation.description) %>" data-placement="bottom">
-      <%- @Icon('help') %>
+    <%- @T("Performa Rating Agen") %>
+    <div class="stat-icon-help js-stat-help" title="<%- @Ti("Performa rating kepuasan pelanggan terhadap pelayanan Anda berdasarkan penilaian tiket.") %>" data-placement="bottom">
+      <%- @Icon("help") %>
     </div>
   </div>
   <div class="stat-graphic">
-    <%- @Icon("mood-#{@StatsTicketEscalation.state}", 'stat-icon mood-icon') %>
+    <%- @Icon("mood-#{@StatsTicketEscalation.state}", "stat-icon mood-icon") %>
   </div>
-  <div class="stat-label"><%- @T('%s of my tickets escalated', @StatsTicketEscalation.own) %></div>
-  <div class="stat-detail"><%- @T('Total: %s', @StatsTicketEscalation.total) %></div>
+  <div class="stat-label">
+    <% if @StatsTicketEscalation.total_ratings && @StatsTicketEscalation.total_ratings > 0: %>
+      <%- @T("Rating: %s / 5.0", @StatsTicketEscalation.own) %>
+    <% else: %>
+      <%- @T("Belum Ada Penilaian") %>
+    <% end %>
+  </div>
+  <div class="stat-detail">
+    <% if @StatsTicketEscalation.total_ratings && @StatsTicketEscalation.total_ratings > 0: %>
+      <%- @T("Total: %s Ulasan Pelanggan", @StatsTicketEscalation.total_ratings) %>
+    <% else: %>
+      <%- @T("0 Ulasan Pelanggan") %>
+    <% end %>
+  </div>
 </div>

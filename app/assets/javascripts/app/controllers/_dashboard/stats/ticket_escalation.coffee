@@ -1,12 +1,16 @@
+# Copyright (C) 2012-2026 Zammad Foundation, https://zammad-foundation.org/
+
 class Stats extends App.ControllerDashboardStatsBase
   render: (data = {}) ->
     if !data.StatsTicketEscalation
       data.StatsTicketEscalation =
         state: 'supergood'
-        own: 0
+        own: 'Belum Ada'
         total: 0
+        total_ratings: 0
+        average_rating: 0.0
 
-    data.StatsTicketEscalation.description = __('How many escalated tickets do you have open? (Mr. Bubbles gets grumpy if you have too many…)')
+    data.StatsTicketEscalation.description = __('Performa rating kepuasan pelanggan terhadap pelayanan Anda berdasarkan penilaian tiket.')
 
     content = App.view('dashboard/stats/ticket_escalation')(data)
 

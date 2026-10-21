@@ -1,0 +1,267 @@
+============================================================
+PLAN FITUR TICKET DURATION TRACKER & LAPORAN SLA
+============================================================
+Aplikasi : IT Helpdesk -- Zammad Custom (v7.2.0)
+Tanggal  : 19 Oktober 2026
+Dibuat   : Antigravity (AI Assistant)
+Status   : FEASIBLE -- Dapat Diwujudkan
+============================================================
+
+
+------------------------------------------------------------
+RINGKASAN EKSEKUTIF
+------------------------------------------------------------
+
+Fitur ini BISA diwujudkan tanpa menambahkan tabel baru.
+Database Zammad sudah menyimpan kolom waktu yang diperlukan:
+
+  Kolom yang sudah ada di tabel `tickets`:
+  +-- created_at            = Waktu tiket dibuat (masuk)
+  +-- close_at              = Waktu tiket ditutup
+  +-- last_close_at         = Waktu penutupan terakhir
+  +-- first_response_at     = Waktu respon pertama dari agent
+  +-- close_in_min          = Durasi penyelesaian (menit) [belum diisi otomatis]
+  +-- first_response_in_min = Durasi respon pertama (menit)
+  +-- update_in_min         = Durasi respon balasan terakhir (menit)
+
+Strategi: Isi kolom close_in_min & first_response_in_min otomatis
+ketika tiket ditutup, lalu buat halaman laporan SLA baru di
+menu Reporting yang menampilkan grafik dan ringkasan statistik.
+
+
+------------------------------------------------------------
+BAGIAN 1 -- APA ITU FITUR SLA TRACKER INI?
+------------------------------------------------------------
+
+Service Level Agreement (SLA) Tracker adalah:
+- Pencatatan otomatis durasi waktu pengerjaan tiket,
+  mulai dari tiket dibuat sampai tiket ditutup.
+- Track record per tiket: berapa menit/jam/hari tiket diselesaikan.
+- Laporan visual berupa grafik pada menu Reporting,
+  terpisah dari laporan Elasticsearch bawaan Zammad.
+- Tidak bergantung pada Elasticsearch (bisa pakai SQL/PostgreSQL langsung).
+
+Data yang dicatat per tiket:
+  -------------------------------------------------
+  Metrik                          | Sumber
+  --------------------------------+-----------------
+  Durasi penyelesaian (menit)     | close_at - created_at
+  Waktu respon pertama (menit)    | first_response_at - created_at
+  Waktu tiket masuk               | created_at
+  Waktu tiket ditutup             | close_at
+  Prioritas tiket                 | priority.name
+  Grup/Departemen                 | group.name
+  Agent penanggung jawab          | owner.fullname
+  -------------------------------------------------
+
+
+------------------------------------------------------------
+BAGIAN 2 -- KOMPONEN YANG PERLU DIBUAT
+------------------------------------------------------------
+
+2.1 BACKEND -- Rails (Ruby)
+------------------------------------------------------------
+
+[A] Callback Otomatis (TANPA migration)
+    File baru: app/models/ticket/tracks_duration.rb
+    - Dipanggil setelah tiket berubah state menjadi "closed"
+    - Menghitung dan menyimpan:
+        close_in_min = (close_at - created_at) / 60
+        first_response_in_min = (first_response_at - created_at) / 60
+    - Hanya berjalan bila state_type = "closed" dan close_at tidak nil
+    - Di-include di app/models/ticket.rb (satu baris)
+
+[B] Controller Laporan SLA
+    File baru: app/controllers/sla_reports_controller.rb
+    Endpoint yang tersedia:
+      GET /api/v1/sla_reports/summary
+        => Kartu statistik: total, rata-rata, min, max durasi
+      GET /api/v1/sla_reports/chart_data
+        => Data titik grafik per hari/minggu/bulan
+      GET /api/v1/sla_reports/tickets
+        => Daftar tiket dengan durasi (untuk tabel detail)
+
+    Query: langsung ke PostgreSQL menggunakan ActiveRecord.
+    Filter yang didukung:
+      date_from, date_to  -- rentang tanggal
+      group_id            -- filter per grup
+      priority_id         -- filter per prioritas
+      interval            -- day / week / month
+
+[C] Policy (Otorisasi)
+    File baru: app/policies/controllers/sla_reports_controller_policy.rb
+    - Hanya agent dan admin yang bisa akses
+    - Customer diblokir dari semua endpoint laporan SLA
+
+[D] Route
+    Tambahkan di config/routes.rb (scope /api/v1):
+      namespace :api, path: '/api' do
+        namespace :v1 do
+          resources :sla_reports, only: [] do
+            collection do
+              get :summary
+              get :chart_data
+              get :tickets
+            end
+          end
+        end
+      end
+
+
+2.2 FRONTEND -- Vanilla JavaScript di application.html.erb
+------------------------------------------------------------
+
+Karena proyek menggunakan pendekatan vanilla JS + MutationObserver
+tanpa rebuild assets, implementasi menggunakan injeksi HTML dinamis.
+
+[A] Deteksi Route
+    Ketika hash URL berubah menjadi "#sla_report":
+    - Buat dan tampilkan panel laporan SLA
+    - Fetch data dari endpoint backend
+    - Render grafik dan tabel
+
+[B] Menu Item Baru di Sidebar
+    Tambahkan link "Laporan SLA" di bagian navigasi sidebar
+    menggunakan MutationObserver yang sudah berjalan.
+    Hanya muncul jika user memiliki role Admin atau Agent.
+
+[C] Library Grafik
+    Menggunakan Chart.js (CDN, ~60KB, ringan):
+    - Sudah populer dan zero server dependency
+    - Mendukung Line Chart, Bar Chart, Doughnut
+    - Mendukung dark mode via theming
+
+    Alternatif tanpa CDN: ASCII bar chart dari data backend langsung.
+
+[D] Komponen UI yang Dibuat
+    1. Summary Cards (4 kotak statistik)
+    2. Line Chart -- tren rata-rata durasi per hari/minggu
+    3. Bar Chart horizontal -- perbandingan antar grup
+    4. Distribusi histogram durasi (< 1jam, 1-4jam, > 4jam)
+    5. Tabel detail tiket dengan kolom durasi + sorting
+    6. Filter bar (date range, grup, prioritas, interval)
+
+
+2.3 TAMPILAN GRAFIK YANG DIRENCANAKAN
+------------------------------------------------------------
+
+Panel 1 -- Kartu Ringkasan
+  [Total Selesai: 142] [Rata-rata: 4j 32m] [Tercepat: 12m] [Terlama: 3 hari]
+
+Panel 2 -- Grafik Tren Durasi (Line Chart)
+  Sumbu X = Tanggal (per hari/minggu/bulan)
+  Sumbu Y = Rata-rata durasi penyelesaian (dalam jam)
+
+Panel 3 -- Perbandingan Per Grup (Bar Chart)
+  Sumbu X = Nama Grup/Departemen
+  Sumbu Y = Rata-rata durasi (jam)
+
+Panel 4 -- Distribusi Durasi
+  < 1 jam   : ######################## 45 tiket
+  1-4 jam   : ################################ 62 tiket
+  4-24 jam  : ################ 28 tiket
+  > 1 hari  : ######## 12 tiket
+
+Panel 5 -- Tabel Rincian Tiket
+  No | Nomor   | Judul    | Masuk       | Selesai     | Durasi | Agent | Prioritas
+  1  | #14070  | Tes SLA  | 19/10 10:00 | 19/10 12:15 | 2j 15m | Admin | Normal
+  2  | #14071  | Internet | 19/10 13:00 | 19/10 13:45 | 45m    | Agent | High
+
+
+------------------------------------------------------------
+BAGIAN 3 -- RENCANA PENGERJAAN (SPRINT)
+------------------------------------------------------------
+
+Sprint 1 -- Backend & Data Layer  (Estimasi: 1-2 hari)
+  [ ] Buat app/models/ticket/tracks_duration.rb (callback)
+  [ ] Backfill data lama: UPDATE tickets SET close_in_min = ...
+  [ ] Buat app/controllers/sla_reports_controller.rb
+  [ ] Buat app/policies/controllers/sla_reports_controller_policy.rb
+  [ ] Tambahkan route di config/routes.rb
+  [ ] Test semua endpoint via curl
+
+Sprint 2 -- Frontend & Grafik  (Estimasi: 1-2 hari)
+  [ ] Tambah Chart.js via CDN di application.html.erb
+  [ ] Buat fungsi renderSlaReport() di JS
+  [ ] Komponen Summary Cards (4 kartu statistik)
+  [ ] Line Chart tren waktu penyelesaian
+  [ ] Bar Chart per grup/departemen
+  [ ] Tabel detail tiket (close_in_min per tiket)
+  [ ] Filter date range, grup, prioritas, interval
+
+Sprint 3 -- Navigasi & Penyempurnaan  (Estimasi: 0.5-1 hari)
+  [ ] Tambahkan menu "Laporan SLA" di sidebar admin
+  [ ] Dark mode support untuk semua komponen
+  [ ] Export data ke CSV (opsional)
+  [ ] Responsive mobile
+
+
+------------------------------------------------------------
+BAGIAN 4 -- ESTIMASI TOTAL WAKTU
+------------------------------------------------------------
+
+  Sprint 1 (Backend)   : 1-2 hari kerja
+  Sprint 2 (Frontend)  : 1-2 hari kerja
+  Sprint 3 (Polish)    : 0.5-1 hari kerja
+  -------------------------------------------
+  Total Estimasi       : 2.5 - 5 hari kerja
+
+
+------------------------------------------------------------
+BAGIAN 5 -- RISIKO & CATATAN TEKNIS
+------------------------------------------------------------
+
+RISIKO RENDAH:
+  [OK] Tidak butuh tabel baru -- kolom sudah ada
+  [OK] Tidak bergantung pada Elasticsearch
+  [OK] Tidak memodifikasi core/framework Zammad
+  [OK] Query ke PostgreSQL lebih cepat dan bisa dipahami
+  [OK] Tidak ada resiko break pada fitur yang sudah berjalan
+
+CATATAN PENTING:
+  [!] Tiket lama yang sudah closed mungkin close_in_min-nya kosong.
+      Solusi: jalankan script backfill satu kali:
+      UPDATE tickets
+      SET close_in_min = EXTRACT(EPOCH FROM (close_at - created_at)) / 60
+      WHERE close_at IS NOT NULL AND close_in_min IS NULL;
+
+  [!] Tiket yang dibuka ulang (re-opened): durasi dihitung dari
+      created_at sampai last_close_at (penutupan terakhir).
+
+  [!] Chart.js via CDN membutuhkan koneksi internet saat load.
+      Alternatif: simpan Chart.js ke app/assets/javascripts/.
+
+  [!] Endpoint SLA Report: hanya untuk user permission 'report'
+      (admin/agent). Customer secara otomatis diblokir oleh policy.
+
+
+------------------------------------------------------------
+BAGIAN 6 -- KESIMPULAN
+------------------------------------------------------------
+
+STATUS    : FEASIBLE -- Dapat diwujudkan dengan effort sedang
+
+KEUNGGULAN PENDEKATAN INI:
+  - Tidak perlu Elasticsearch, cukup PostgreSQL yang sudah ada
+  - Data waktu sudah tersimpan di tabel tickets sejak awal
+  - Tidak ada risiko merusak sistem yang sedang berjalan
+  - Grafik interaktif dengan filter fleksibel
+  - Sesuai arsitektur project (vanilla JS + Rails backend)
+  - Dapat dikerjakan bertahap per sprint
+
+REKOMENDASI URUTAN PENGERJAAN:
+  1. Sprint 1 dulu (backend) -- bisa selesai 1 hari,
+     langsung testable via curl tanpa frontend
+  2. Sprint 2 (frontend + grafik) setelah data endpoint stabil
+  3. Sprint 3 (navigasi + polish) terakhir
+
+PERSETUJUAN DIPERLUKAN SEBELUM MULAI:
+  - Apakah ingin pakai Chart.js dari CDN atau bundle lokal?
+  - Apakah diperlukan export CSV/Excel?
+  - Apakah ada target tampilan/warna khusus untuk grafik?
+  - Apakah perlu filter tambahan selain grup, prioritas, tanggal?
+
+============================================================
+END OF PLAN -- PLAN_FITUR_SLA_TRACKER.txt
+============================================================
+

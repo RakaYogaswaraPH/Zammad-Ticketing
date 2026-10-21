@@ -3,39 +3,45 @@
 class Stats::TicketEscalation
 
   def self.generate(user)
+    # Agent performance rating
+    avg_rating = user.average_rating.to_f
+    total_ratings = user.total_ratings.to_i
 
-    open_state_ids = Ticket::State.by_category_ids(:open)
+    # Fallback to TicketRating directly if needed
+    if total_ratings.zero? && defined?(TicketRating)
+      ratings = TicketRating.where(agent_id: user.id)
+      total_ratings = ratings.count
+      avg_rating = total_ratings.positive? ? ratings.average(:rating).to_f.round(2) : 0.0
+    end
 
-    # get users groups
-    group_ids = user.group_ids_access('full')
-
-    # owned tickets
-    own_escalated = Ticket.where(
-      'owner_id = ? AND group_id IN (?) AND state_id IN (?) AND escalation_at < ?', user.id, group_ids, open_state_ids, Time.zone.now
-    ).count
-
-    # all tickets
-    all_escalated = Ticket.where(
-      'group_id IN (?) AND state_id IN (?) AND escalation_at < ?', group_ids, open_state_ids, Time.zone.now
-    ).count
-
-    average = '-'
-    state = if own_escalated.zero?
-              'supergood'
-            elsif own_escalated <= 1
+    state = if total_ratings.zero?
               'good'
-            elsif own_escalated <= 4
+            elsif avg_rating >= 4.5
+              'supergood'
+            elsif avg_rating >= 3.5
+              'good'
+            elsif avg_rating >= 2.5
               'ok'
-            else
+            elsif avg_rating >= 1.5
               'bad'
+            else
+              'superbad'
             end
 
+    own_text = if total_ratings.positive?
+                 "#{avg_rating.round(1)} ⭐"
+               else
+                 'Belum Ada'
+               end
+
     {
-      used_for_average:  own_escalated,
-      average_per_agent: average,
+      used_for_average:  avg_rating,
+      average_per_agent: avg_rating,
       state:             state,
-      own:               own_escalated,
-      total:             all_escalated,
+      average_rating:    avg_rating,
+      total_ratings:     total_ratings,
+      own:               own_text,
+      total:             total_ratings,
     }
   end
 

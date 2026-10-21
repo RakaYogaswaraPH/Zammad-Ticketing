@@ -152,10 +152,23 @@ html, body {
 }
 </style>
 
+<%
+  logo_asset = begin
+    Service::SystemAssets.backend('product_logo')&.sendable_asset
+  rescue => e
+    nil
+  end
+  logo_src = if logo_asset
+    "data:#{logo_asset.type};base64,#{Base64.strict_encode64(logo_asset.content)}"
+  else
+    "/api/v1/system_assets/product_logo/#{Setting.get('product_logo')}"
+  end
+-%>
+
 <div id="loading-app">
   <div class="diskominfo-preloader-container">
     <div class="diskominfo-preloader-logo-wrapper">
-      <img class="diskominfo-preloader-logo" src="/api/v1/assets/logo/1790659610" alt="Diskominfo Logo" id="diskominfo-preloader-img" />
+      <img class="diskominfo-preloader-logo" src="<%= logo_src %>" alt="Diskominfo Logo" id="diskominfo-preloader-img" />
     </div>
 
     <div class="diskominfo-preloader-title">IT Helpdesk</div>

@@ -145,11 +145,12 @@ class ReportsController < ApplicationController
     end
 
     local_config = Report.config
-    if !local_config || !local_config[:metric] || !local_config[:metric][params[:metric].to_sym]
+    metric_key = params[:metric].presence&.to_sym || local_config&.dig(:metric)&.find { |_k, cfg| cfg[:default] }&.first || :count
+    if !local_config || !local_config[:metric] || !local_config[:metric][metric_key]
       raise Exceptions::UnprocessableContent, "Could not find metric #{params[:metric]}"
     end
 
-    metric = local_config[:metric][params[:metric].to_sym]
+    metric = local_config[:metric][metric_key]
 
     timezone = params[:timezone].presence || Setting.get('timezone_default')
 

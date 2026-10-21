@@ -2,6 +2,7 @@ class User extends App.SingleObjectPopoverProvider
   @klass = App.User
   @selectorCssClassPrefix = 'user'
   @templateName = 'user'
+  @permission = 'ticket.customer'
   @ignoredAttributes = ['firstname', 'lastname', 'organization']
   @additionalHeadlineTemplateName: 'user_organization_headline'
 

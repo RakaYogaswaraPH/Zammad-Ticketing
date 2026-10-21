@@ -42,9 +42,11 @@
   </a>
   <% end %>
 <% end %>
+<% if App.Session.get() && (App.Session.get().permission('ticket.agent') || App.Session.get().permission('admin')): %>
 <a class="menu-item js-searchdetailMenuItem" href="#search" data-key="Search">
   <%- @Icon('searchdetail', 'menu-item-icon') %>
   <span class="menu-item-name">
     <%- @T('All Tickets') %>
   </span>
 </a>
+<% end %>

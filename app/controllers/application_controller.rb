@@ -17,4 +17,9 @@ class ApplicationController < ActionController::Base
   include ApplicationController::Klass
   include ApplicationController::HandlesSensitiveParams
   include ApplicationHelper
+
+  content_security_policy do |policy|
+    policy.style_src :self, :unsafe_inline, 'https://fonts.googleapis.com'
+    policy.font_src :self, :data, 'https://fonts.gstatic.com'
+  end
 end

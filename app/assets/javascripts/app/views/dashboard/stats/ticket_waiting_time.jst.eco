@@ -1,7 +1,7 @@
-<div class="time stat-widget vertical">
+<div class="time stat-widget vertical stat-widget--time">
   <div class="stat-title">
-    <%- @T('∅ Waiting time today') %>
-    <div class="stat-icon-help js-stat-help" title="<%- @Ti(@StatsTicketWaitingTime.description) %>" data-placement="bottom">
+    <%- @T('Ø Waktu Tanggap Hari Ini') %>
+    <div class="stat-icon-help js-stat-help" title="<%- @Ti('Rata-rata waktu tunggu pelanggan untuk mendapatkan tanggapan hari ini.') %>" data-placement="bottom">
       <%- @Icon('help') %>
     </div>
   </div>
@@ -12,6 +12,6 @@
       <div class="stat-amount"></div>
     </div>
   </div>
-  <div class="stat-label"><%- @T('My handling time: %s minutes', @StatsTicketWaitingTime.handling_time) %></div>
-  <div class="stat-detail"><%- @T('Average: %s minutes', @StatsTicketWaitingTime.average_per_agent) %></div>
+  <div class="stat-label"><%- @T('Waktu Tanggap: %s Menit', @StatsTicketWaitingTime.handling_time || 0) %></div>
+  <div class="stat-detail"><%- @T('Rata-rata Sistem: %s Menit', @StatsTicketWaitingTime.average_per_agent || 0) %></div>
 </div>

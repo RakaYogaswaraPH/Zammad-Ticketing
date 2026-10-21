@@ -38,6 +38,8 @@ class User < ApplicationModel
   has_many                :tokens,                 after_add: :cache_update, after_remove: :cache_update, dependent: :destroy
   has_many                :authorizations,         after_add: :cache_update, after_remove: :cache_update, dependent: :destroy
   has_many                :online_notifications,   dependent: :destroy
+  has_many                :received_ratings,       class_name: 'TicketRating', foreign_key: :agent_id, dependent: :destroy
+  has_many                :given_ratings,          class_name: 'TicketRating', foreign_key: :customer_id, dependent: :destroy
   has_many                :taskbars,               dependent: :destroy
   has_many                :user_devices,           dependent: :destroy
   has_one                 :chat_agent_created_by,  class_name: 'Chat::Agent', foreign_key: :created_by_id, dependent: :destroy, inverse_of: :created_by

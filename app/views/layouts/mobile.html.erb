@@ -12,14 +12,55 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= action_cable_meta_tag %>
+    <style nonce="<%= content_security_policy_nonce %>">
+      /* Ensure purely dark background for mobile bottom navigation bar */
+      .bottom-navigation,
+      footer[data-bottom-navigation] {
+        background-color: rgba(25, 25, 25, 0.95) !important;
+        background: rgba(25, 25, 25, 0.95) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4) !important;
+      }
+
+      /* Hide 'Continue to desktop' link completely on mobile */
+      a[href="/#login"],
+      a[href*="#login"],
+      a[href="/#admin_password_auth"],
+      .continue-to-desktop {
+        display: none !important;
+      }
+    </style>
 
     <%= vite_typescript_tag 'mobile', nonce: true %>
     <%= vite_client_tag %>
     <%= javascript_tag nonce: true do -%>
-      window.__ = (str) => str
+      window.__ = (str) => str;
+      (function() {
+        try {
+          localStorage.removeItem('forceDesktopApp');
+          sessionStorage.removeItem('forceDesktopApp');
+        } catch(e) {}
+
+        function removeDesktopLinks() {
+          var links = document.querySelectorAll('a[href*="#login"], a[href="/#login"], a[href*="admin_password_auth"], a');
+          links.forEach(function(el) {
+            var text = (el.textContent || '').trim().toLowerCase();
+            if (text.indexOf('continue to desktop') !== -1 || text.indexOf('ke desktop') !== -1) {
+              el.style.setProperty('display', 'none', 'important');
+              if (el.parentNode && el.parentNode.childNodes.length === 1) {
+                el.parentNode.style.setProperty('display', 'none', 'important');
+              }
+            }
+          });
+        }
+
+        setInterval(removeDesktopLinks, 200);
+        document.addEventListener('DOMContentLoaded', removeDesktopLinks);
+      })();
     <% end -%>
   </head>
   <body>
     <%= yield %>
   </body>
 </html>
+

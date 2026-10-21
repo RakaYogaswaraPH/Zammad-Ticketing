@@ -25,10 +25,18 @@ module Ticket::SetsCloseTime
     end
 
     # check if close_at is already set
-    return true if close_at
+    self.close_at ||= Time.zone.now
 
-    # set close_at
-    self.close_at = Time.zone.now
+    # calculate close duration in minutes
+    if created_at.present?
+      effective_close = last_close_at || close_at
+      self.close_in_min = [((effective_close - created_at) / 60).round, 0].max
+    end
+
+    # calculate first response duration in minutes if present
+    if first_response_at.present? && created_at.present? && first_response_in_min.blank?
+      self.first_response_in_min = [((first_response_at - created_at) / 60).round, 0].max
+    end
   end
 
   def ticket_closed?(ticket)

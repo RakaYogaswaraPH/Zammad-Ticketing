@@ -23,7 +23,8 @@ class App.Router extends Spine.Controller
             try
               new callback(params)
             catch e
-              App.Log.error "route #{route}:", e
+              unless typeof e is 'string' and e.indexOf('No permission') isnt -1
+                App.Log.error "route #{route}:", e
           controller(params)
         )
 

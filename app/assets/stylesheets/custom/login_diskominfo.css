@@ -1,8 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap');
+
 /* ==========================================================================
    Diskominfo Kabupaten Bandung - Fullscreen Split View Login Theme
    ========================================================================== */
 
-/* Fullscreen Page Reset */
+/* Fullscreen Page Reset & Typography */
+html,
+body,
+#app,
+#loading-app,
+.login,
+.signup,
+.reset_password,
+.fullscreen,
+input,
+button,
+label,
+.form-control,
+.btn {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html,
 body,
 #app,
@@ -202,7 +222,7 @@ body,
   position: relative !important;
   border-radius: 0 !important;
   overflow: hidden !important;
-  background: url('https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&w=1400&q=80') center center / cover no-repeat !important;
+  background: url('/assets/images/IT_Helpdesk.jpg') center center / cover no-repeat !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
@@ -406,7 +426,10 @@ body,
   margin: 12px 0 24px 0 !important;
 }
 
-.checkbox-replacement {
+.login .checkbox-replacement,
+.signup .checkbox-replacement,
+.reset_password .checkbox-replacement,
+.fullscreen .checkbox-replacement {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -420,11 +443,17 @@ body,
   transition: color 0.15s ease-in-out !important;
 }
 
-.checkbox-replacement:hover {
+.login .checkbox-replacement:hover,
+.signup .checkbox-replacement:hover,
+.reset_password .checkbox-replacement:hover,
+.fullscreen .checkbox-replacement:hover {
   color: #0b5ed7 !important;
 }
 
-.checkbox-replacement input[type="checkbox"] {
+.login .checkbox-replacement input[type="checkbox"],
+.signup .checkbox-replacement input[type="checkbox"],
+.reset_password .checkbox-replacement input[type="checkbox"],
+.fullscreen .checkbox-replacement input[type="checkbox"] {
   position: absolute !important;
   opacity: 0 !important;
   width: 0 !important;
@@ -433,14 +462,23 @@ body,
   pointer-events: none !important;
 }
 
-/* Hide Zammad SVGs inside checkbox-replacement */
-.checkbox-replacement .icon,
-.checkbox-replacement svg:not(.custom-check-svg) {
+/* Hide Zammad SVGs inside checkbox-replacement ONLY on login/signup pages */
+.login .checkbox-replacement .icon,
+.login .checkbox-replacement svg:not(.custom-check-svg),
+.signup .checkbox-replacement .icon,
+.signup .checkbox-replacement svg:not(.custom-check-svg),
+.reset_password .checkbox-replacement .icon,
+.reset_password .checkbox-replacement svg:not(.custom-check-svg),
+.fullscreen .checkbox-replacement .icon,
+.fullscreen .checkbox-replacement svg:not(.custom-check-svg) {
   display: none !important;
 }
 
 /* Checkbox Box (Unchecked) */
-.checkbox-replacement .checkbox-box {
+.login .checkbox-replacement .checkbox-box,
+.signup .checkbox-replacement .checkbox-box,
+.reset_password .checkbox-replacement .checkbox-box,
+.fullscreen .checkbox-replacement .checkbox-box {
   width: 18px !important;
   height: 18px !important;
   border: 1.5px solid #cbd5e1 !important;
@@ -456,12 +494,18 @@ body,
 }
 
 /* Hover state */
-.checkbox-replacement:hover .checkbox-box {
+.login .checkbox-replacement:hover .checkbox-box,
+.signup .checkbox-replacement:hover .checkbox-box,
+.reset_password .checkbox-replacement:hover .checkbox-box,
+.fullscreen .checkbox-replacement:hover .checkbox-box {
   border-color: #0b5ed7 !important;
 }
 
 /* White checkmark inside the checkbox box using CSS ::after */
-.checkbox-replacement .checkbox-box::after {
+.login .checkbox-replacement .checkbox-box::after,
+.signup .checkbox-replacement .checkbox-box::after,
+.reset_password .checkbox-replacement .checkbox-box::after,
+.fullscreen .checkbox-replacement .checkbox-box::after {
   content: "" !important;
   width: 4px !important;
   height: 8px !important;
@@ -476,18 +520,27 @@ body,
 }
 
 /* Checked State */
-.checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box {
+.login .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box,
+.signup .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box,
+.reset_password .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box,
+.fullscreen .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box {
   background-color: #0b5ed7 !important;
   border-color: #0b5ed7 !important;
 }
 
-.checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after {
+.login .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after,
+.signup .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after,
+.reset_password .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after,
+.fullscreen .checkbox-replacement input[type="checkbox"]:checked ~ .checkbox-box::after {
   opacity: 1 !important;
   transform: rotate(45deg) scale(1) !important;
 }
 
 /* Label text turns blue when checked */
-.checkbox-replacement input[type="checkbox"]:checked ~ .label-text {
+.login .checkbox-replacement input[type="checkbox"]:checked ~ .label-text,
+.signup .checkbox-replacement input[type="checkbox"]:checked ~ .label-text,
+.reset_password .checkbox-replacement input[type="checkbox"]:checked ~ .label-text,
+.fullscreen .checkbox-replacement input[type="checkbox"]:checked ~ .label-text {
   color: #0b5ed7 !important;
   font-weight: 600 !important;
 }
@@ -768,16 +821,98 @@ body,
 }
 
 /* ==========================================================================
-   Responsive Adaptations
+   Responsive Login Page — Full Multi-Breakpoint
    ========================================================================== */
-@media (max-width: 900px) {
+
+/* Large desktop (1280px+): 55 / 45 split */
+@media (min-width: 1280px) {
+  .diskominfo-hero-section {
+    flex: 0 0 55% !important;
+    width: 55% !important;
+    padding: 56px !important;
+  }
+  .diskominfo-form-section {
+    flex: 0 0 45% !important;
+    width: 45% !important;
+    padding: 56px 40px !important;
+  }
+  .diskominfo-form-inner-wrapper {
+    max-width: 420px !important;
+  }
+  .diskominfo-hero-quote {
+    font-size: 24px !important;
+  }
+  .diskominfo-hero-brand-name {
+    font-size: 24px !important;
+  }
+  .diskominfo-main-title {
+    font-size: 34px !important;
+  }
+}
+
+/* Standard desktop / laptop (1024px – 1279px): 50 / 50 */
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .diskominfo-hero-section {
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    padding: 48px !important;
+  }
+  .diskominfo-form-section {
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    padding: 48px 32px !important;
+  }
+  .diskominfo-form-inner-wrapper {
+    max-width: 420px !important;
+  }
+}
+
+/* Tablet landscape (768px – 1023px): 40 / 60 */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .diskominfo-hero-section {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+    padding: 36px 28px !important;
+  }
+  .diskominfo-form-section {
+    flex: 0 0 60% !important;
+    width: 60% !important;
+    padding: 40px 32px !important;
+  }
+  .diskominfo-form-inner-wrapper {
+    max-width: 400px !important;
+  }
+  .diskominfo-hero-quote {
+    font-size: 18px !important;
+  }
+  .diskominfo-hero-brand-name {
+    font-size: 19px !important;
+  }
+  .diskominfo-hero-brand-sub {
+    font-size: 12px !important;
+  }
+  .diskominfo-hero-logo {
+    height: 38px !important;
+  }
+  .diskominfo-main-title {
+    font-size: 28px !important;
+  }
+  .diskominfo-main-subtitle {
+    font-size: 13.5px !important;
+  }
+}
+
+/* Tablet portrait & mobile (< 768px): stack vertically */
+@media (max-width: 767px) {
   html,
   body,
   #app {
     overflow-y: auto !important;
   }
 
-  .login.fullscreen {
+  .login.fullscreen,
+  .signup.fullscreen,
+  .reset_password.fullscreen {
     flex-direction: column !important;
     height: auto !important;
     min-height: 100vh !important;
@@ -786,7 +921,13 @@ body,
 
   .login .fullscreen-center,
   .login .fullscreen-body,
-  .login .hero-unit {
+  .login .hero-unit,
+  .signup .fullscreen-center,
+  .signup .fullscreen-body,
+  .signup .hero-unit,
+  .reset_password .fullscreen-center,
+  .reset_password .fullscreen-body,
+  .reset_password .hero-unit {
     flex-direction: column !important;
     height: auto !important;
     min-height: auto !important;
@@ -796,21 +937,33 @@ body,
     flex: none !important;
     width: 100% !important;
     height: auto !important;
-    min-height: 240px !important;
-    padding: 28px 24px !important;
+    min-height: 200px !important;
+    max-height: 260px !important;
+    padding: 24px 20px !important;
+    box-sizing: border-box !important;
   }
 
-  .diskominfo-hero-quote {
-    font-size: 17px !important;
-    margin-bottom: 8px !important;
+  /* Hide quote on mobile — only show brand header */
+  .diskominfo-hero-footer {
+    display: none !important;
   }
 
-  .diskominfo-quote-author {
-    font-size: 14px !important;
+  .diskominfo-hero-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
   }
 
-  .diskominfo-quote-dept {
-    font-size: 12px !important;
+  .diskominfo-hero-logo {
+    height: 36px !important;
+  }
+
+  .diskominfo-hero-brand-name {
+    font-size: 18px !important;
+  }
+
+  .diskominfo-hero-brand-sub {
+    font-size: 11.5px !important;
   }
 
   .diskominfo-form-section {
@@ -818,7 +971,13 @@ body,
     width: 100% !important;
     height: auto !important;
     min-height: auto !important;
-    padding: 36px 20px !important;
+    padding: 32px 20px 40px !important;
+    box-sizing: border-box !important;
+  }
+
+  .diskominfo-form-inner-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
   .diskominfo-main-title {
@@ -827,5 +986,70 @@ body,
 
   .diskominfo-main-subtitle {
     font-size: 13px !important;
+    max-width: 100% !important;
+  }
+
+  .diskominfo-form-header {
+    margin-bottom: 24px !important;
+  }
+
+  .diskominfo-form-content .form-control {
+    height: 44px !important;
+  }
+
+  .btn--diskominfo-submit {
+    height: 44px !important;
+    font-size: 15px !important;
+  }
+}
+
+/* Small mobile (< 480px): tighter spacing */
+@media (max-width: 479px) {
+  .diskominfo-hero-section {
+    min-height: 160px !important;
+    max-height: 200px !important;
+    padding: 20px 16px !important;
+  }
+
+  .diskominfo-hero-logo {
+    height: 30px !important;
+  }
+
+  .diskominfo-hero-brand-name {
+    font-size: 16px !important;
+  }
+
+  .diskominfo-hero-brand-sub {
+    font-size: 10.5px !important;
+  }
+
+  .diskominfo-form-section {
+    padding: 28px 16px 36px !important;
+  }
+
+  .diskominfo-main-title {
+    font-size: 23px !important;
+  }
+
+  .diskominfo-main-subtitle {
+    font-size: 12.5px !important;
+  }
+
+  .diskominfo-form-content .form-group {
+    margin-bottom: 14px !important;
+  }
+
+  .diskominfo-form-content .form-control {
+    height: 42px !important;
+    font-size: 13.5px !important;
+  }
+
+  .btn--diskominfo-submit {
+    height: 42px !important;
+    font-size: 14.5px !important;
+  }
+
+  .diskominfo-footer-section {
+    margin-top: 20px !important;
   }
 }

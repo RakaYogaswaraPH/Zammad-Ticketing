@@ -68,6 +68,12 @@ class App.Search extends App.Controller
       @render()
     )
 
+    # Real-time update: re-search when any ticket is created, updated, touched, or deleted
+    @controllerBind('Ticket:create Ticket:update Ticket:touch Ticket:destroy overview:fetch', =>
+      if @el && @el.is(':visible')
+        @search(0, true, false, true)
+    )
+
     load = (data) =>
       App.Collection.loadAssets(data.assets)
       @formMeta = data.form_meta
@@ -96,10 +102,12 @@ class App.Search extends App.Controller
 
     @navupdate(url: '#search', type: 'menu')
 
-    if !_.isEmpty(params.query) # When opening detailed search from the global search
+    if !_.isEmpty(params?.query) # When opening detailed search from the global search
       @$('.js-search').val(params.query).trigger('keyup')
     else if @query # When coming back to detailed search taskbar from another taskbar
       @reloadCurrentSearch()
+    else
+      @search(0, true, false, true)
 
   hide: ->
     if @table
@@ -168,8 +176,7 @@ class App.Search extends App.Controller
 
     @html elLocal
     @renderShortcuts()
-    if @query
-      @search(500, true)
+    @search(0, true, false, true)
 
   listNavigate: (e) =>
     @resultPaginated = {}
@@ -191,10 +198,9 @@ class App.Search extends App.Controller
 
     @delayedRemoveAnyPopover()
 
-  search: (delay, force = false, skipRendering = false) =>
+  search: (delay, force = false, skipRendering = false, bypassCache = false) =>
     query = @searchInput.val().trim()
     if !force
-      return if !query
       return if query is @query
     @query = query
     @updateTask()
@@ -210,6 +216,7 @@ class App.Search extends App.Controller
       delay:         delay
       query:         @query
       skipRendering: skipRendering
+      force:         bypassCache
     )
 
   buildResultCacheKey: (offset, direction, column, object) -> {

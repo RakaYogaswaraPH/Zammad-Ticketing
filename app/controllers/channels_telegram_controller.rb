@@ -7,7 +7,7 @@ class ChannelsTelegramController < ApplicationController
   def index
     assets = {}
     channel_ids = []
-    Channel.where(area: 'Telegram::Bot').reorder(:id).each do |channel|
+    Channel.where(area: "Telegram::Bot").reorder(:id).each do |channel|
       assets = channel.assets(assets)
       channel_ids.push channel.id
     end
@@ -27,7 +27,7 @@ class ChannelsTelegramController < ApplicationController
   end
 
   def update
-    channel = Channel.find_by(id: params[:id], area: 'Telegram::Bot')
+    channel = Channel.find_by(id: params[:id], area: "Telegram::Bot")
     begin
       channel = TelegramHelper.create_or_update_channel(params[:api_token], params, channel)
     rescue => e
@@ -37,33 +37,47 @@ class ChannelsTelegramController < ApplicationController
   end
 
   def enable
-    channel = Channel.find_by(id: params[:id], area: 'Telegram::Bot')
+    channel = Channel.find_by(id: params[:id], area: "Telegram::Bot")
     channel.active = true
     channel.save!
     render json: {}
   end
 
   def disable
-    channel = Channel.find_by(id: params[:id], area: 'Telegram::Bot')
+    channel = Channel.find_by(id: params[:id], area: "Telegram::Bot")
     channel.active = false
     channel.save!
     render json: {}
   end
 
   def destroy
-    channel = Channel.find_by(id: params[:id], area: 'Telegram::Bot')
+    channel = Channel.find_by(id: params[:id], area: "Telegram::Bot")
     channel.destroy
     render json: {}
   end
 
   def webhook
-    raise Exceptions::UnprocessableContent, 'bot id is missing' if params['bid'].blank?
+    raise Exceptions::UnprocessableContent, "bot id is missing" if params["bid"].blank?
 
-    channel = TelegramHelper.bot_by_bot_id(params['bid'])
-    raise Exceptions::UnprocessableContent, 'bot not found' if !channel
+    channel = TelegramHelper.bot_by_bot_id(params["bid"])
+    raise Exceptions::UnprocessableContent, "bot not found" if !channel
 
-    if channel.options[:callback_token] != params['callback_token']
-      raise Exceptions::UnprocessableContent, 'invalid callback token'
+    if channel.options[:callback_token] != params["callback_token"]
+      raise Exceptions::UnprocessableContent, "invalid callback token"
+    end
+
+    if params[:callback_query].present?
+      data = (params.dig(:callback_query, :data) || params.dig("callback_query", "data")).to_s
+      if data.start_with?("rate:") || data.start_with?("rate_skip:")
+        TelegramRatingHandler.handle_callback(params[:callback_query], channel)
+        return render json: {}, status: :ok
+      end
+    end
+
+    if params[:message].present?
+      if TelegramRatingHandler.handle_message(params[:message], channel)
+        return render json: {}, status: :ok
+      end
     end
 
     telegram = TelegramHelper.new(channel.options[:api_token])
