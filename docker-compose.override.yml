@@ -1,0 +1,15 @@
+x-custom-code: &custom-code
+  volumes:
+    - ${HOME}/Zammad/Zammad-Custom/app:/opt/zammad/app:z
+    - ${HOME}/Zammad/Zammad-Custom/lib:/opt/zammad/lib:z
+    - ${HOME}/Zammad/Zammad-Custom/i18n:/opt/zammad/i18n:z
+    - ${HOME}/Zammad/Zammad-Custom/config/routes/sla_reports.rb:/opt/zammad/config/routes/sla_reports.rb:z
+    - ${HOME}/Zammad/Zammad-Custom/config/routes/ticket_open_count.rb:/opt/zammad/config/routes/ticket_open_count.rb:z
+
+services:
+  zammad-railsserver:
+    <<: *custom-code
+  zammad-scheduler:
+    <<: *custom-code
+  zammad-websocket:
+    <<: *custom-code
