@@ -13,3 +13,4 @@ services:
     <<: *custom-code
   zammad-websocket:
     <<: *custom-code
+

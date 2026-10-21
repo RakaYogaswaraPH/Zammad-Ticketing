@@ -355,3 +355,4 @@ cd ~/Zammad/Zammad-Custom
 git pull origin main
 docker compose -f ~/Zammad/zammad/docker-compose.yml -f ~/Zammad/zammad/docker-compose.override.yml restart zammad-railsserver
 ```
+
